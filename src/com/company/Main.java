@@ -4,6 +4,7 @@ package com.company;
 import org.w3c.dom.ls.LSOutput;
 
 import java.io.*;
+import java.net.DatagramSocket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -25,8 +26,10 @@ public class Main {
        setArgList();
        try {
            for (String arg : args) {
-
+              
            }
+           DatagramSocket socket = new DatagramSocket(4445);
+
        } catch (Exception e) {
            System.out.println("Wrong argument list. Type --help or -h to check command list");
            //e.printStackTrace();
