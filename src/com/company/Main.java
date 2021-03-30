@@ -12,8 +12,16 @@ import java.util.Scanner;
 
 public class Main {
 
+    /** List of permitted agrs **/
     private static List<ArgAvailable> argList = new ArrayList<>();
 
+    /** setArgList method checks all arguments write by user in command line while running the program
+     * It fills the argList with allowed arguments by reading the file "args.txt"
+     * It throws an Exception when user typed:
+     * unavailable argument
+     * twice or more the same argument
+     * --help or -h along with the other arguments
+     **/
     private static void setArgList() throws FileNotFoundException {
         File file = new File("args.txt");
         Scanner in = new Scanner(file);
