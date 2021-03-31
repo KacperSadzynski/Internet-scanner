@@ -12,35 +12,23 @@ import java.util.List;
  * It scans all public IPv4 addresses by sending to all available DNS servers query and waiting for respond
  * If the amplification of the sent packet is big enough it print out the IP of this server
  **/
-public class DNSScanner {
+public class DNSScanner extends IPv4Addresses {
     //private DatagramSocket datagramSocket = new DatagramSocket(53);
-    private Socket socket = new Socket("127.0.0.1", 53);
-    /** list of all IPv4 addresses **/
-    private List<InetAddress> ipList = new ArrayList<>();
+    private Socket socket = new Socket("127.0.0.1", 53); //?
 
-    private Byte[] rawIPList = new Byte[] {0, 0, 0, 0};
 
     private void doStuff() throws IOException {
+        scan();
+    }
 
-        /** Generating all IPv4 addresses **/
-        for (int j = 3; j >= 0; j--) {
-            for (int i = 0; i <= 8; i++) {
-                rawIPList[j] = (byte)i;
-                InetAddress temp = InetAddress.getByAddress(new byte[] {rawIPList[0], rawIPList[1], rawIPList[2], rawIPList[3]});
-                ipList.add(temp);
-            }
-        }
-
-        for (InetAddress addr : ipList) {
-            //TODO DNS QUERY
-            DatagramSocket datagramSocket = new DatagramSocket(53, addr);
-            byte[] buf = new byte[256];
-            DatagramPacket packet = new DatagramPacket(buf, buf.length, addr, 53);
-            //DatagramPacket
-            //https://docs.oracle.com/javase/7/docs/api/java/net/DatagramPacket.html
-
-
-        }
+    @Override
+    public void query(InetAddress dest) throws SocketException {
+        //TODO DNS QUERY
+        DatagramSocket datagramSocket = new DatagramSocket(53, dest);
+        byte[] buf = new byte[256];
+        DatagramPacket packet = new DatagramPacket(buf, buf.length, dest, 53);
+        //DatagramPacket
+        //https://docs.oracle.com/javase/7/docs/api/java/net/DatagramPacket.html
     }
 
 
@@ -48,6 +36,6 @@ public class DNSScanner {
 
 
     public DNSScanner() throws IOException {
-        System.out.println(":(");
+        System.out.println("BibleThump");// +1
     }
 }
