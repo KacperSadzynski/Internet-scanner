@@ -58,20 +58,20 @@ public class Main {
         }
         return true;
     }
-    public static int main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException {
        setArgList();
-
+        /*
        try {
             if(!verificationArgs(args)){
                 throw new Exception();
             }
        } catch (Exception e) {
            System.out.println("Wrong argument list. Type --help or -h to check command list");
-           return -1;
+           return;
        }
-
+        */
        IPv4Addresses iPv4Addresses = new IPv4Addresses();
 
-       return 0;
+       return;
     }
 }
