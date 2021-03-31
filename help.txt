@@ -1,0 +1,16 @@
+List of commands:
+--help / -h
+This command list all commands that you can type in list of arguments while running the program.
+This command cannot be typed along side with others listed here commands!
+
+--DNS / -d
+This command scans all DNS servers having public IPv4 addresses
+If DNS server responses with big amplification program will list this server
+
+--SNMP / -s
+
+
+--NTP / -n
+
+
+--MemCached / -mc

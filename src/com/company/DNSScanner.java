@@ -8,14 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
-DNSScanner class creates a socket bound to port 53 and a UDP packet for DNS protocol
-It scans all public IPv4 addresses by sending to all available DNS servers query and waiting for respond
-If the amplification of the sent packet is big enough it print out the IP of this server
-**/
+ * DNSScanner class creates a socket bound to port 53 and a UDP packet for DNS protocol
+ * It scans all public IPv4 addresses by sending to all available DNS servers query and waiting for respond
+ * If the amplification of the sent packet is big enough it print out the IP of this server
+ **/
 public class DNSScanner {
     //private DatagramSocket datagramSocket = new DatagramSocket(53);
     private Socket socket = new Socket("127.0.0.1", 53);
-    /**list of all IPv4 addresses **/
+    /** list of all IPv4 addresses **/
     private List<InetAddress> ipList = new ArrayList<>();
 
     private Byte[] rawIPList = new Byte[] {0, 0, 0, 0};

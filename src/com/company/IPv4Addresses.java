@@ -7,6 +7,7 @@ import java.util.List;
 
 public class IPv4Addresses {
 
+    /** List that contains all IPv4 possible addresses **/
     private final static List<InetAddress> IPv4List = new ArrayList<>();
 
     public IPv4Addresses() throws UnknownHostException {

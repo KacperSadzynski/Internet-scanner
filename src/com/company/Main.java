@@ -26,6 +26,7 @@ public class Main {
             argList.add(new ArgAvailable(in.nextLine(),in.nextLine()));
         }
     }
+
     /**
      * verificationArgs method checks all arguments write by user in command line while running the program
      * It throws an Exception/false when user typed:
@@ -37,6 +38,7 @@ public class Main {
 
         /** checking if --help or -h has been typed **/
         if(help.match(args[0]) && args.length == 1) {
+            args[0] = help.getShortcut();
             return true;
         }
         else if (help.match(args[0])) {
@@ -47,6 +49,7 @@ public class Main {
             boolean  flag = false; //is argument given by an user available
             for( int j = 0; j < argList.size(); j++){
                 if(argList.get(j).match(args[i])){
+                    args[i] = argList.get(j).getShortcut();
                     argList.remove(j);
                     flag = true;
                     break;
@@ -70,8 +73,35 @@ public class Main {
            return;
        }
         */
-       IPv4Addresses iPv4Addresses = new IPv4Addresses();
 
+        for(int i = 0; i < args.length; i++) {
+            switch (args[i]){
+                case "-h": {
+                    File file = new File("help.txt");
+                    Scanner in = new Scanner(file);
+                    while(in.hasNext()){
+                        System.out.println(in.nextLine());
+                    }
+                    break;
+                }
+                case "-d": {
+                    System.out.println("Running DNS Scanner");
+                    break;
+                }
+                case "-s": {
+                    System.out.println("Running SNMP Scanner");
+                    break;
+                }
+                case "-n": {
+                    System.out.println("Running NTP Scanner");
+                    break;
+                }
+                case "-mc": {
+                    System.out.println("Running MemCached Scanner Scanner");
+                    break;
+                }
+            }
+        }
        return;
     }
 }

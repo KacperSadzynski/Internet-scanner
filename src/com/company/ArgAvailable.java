@@ -3,12 +3,13 @@ package com.company;
 import java.util.Objects;
 
 /**
-ArgAvailable class keeps the information about a single permitted argument (full name and shortcut)
-which you can write in the command line while running the program
-**/
+ * ArgAvailable class keeps the information about a single permitted argument (full name and shortcut)
+ * which you can write in the command line while running the program
+ **/
 public class ArgAvailable {
-    private String fullName;
-    private String shortcut;
+
+    private final String fullName;
+    private final String shortcut;
 
 
 
@@ -20,4 +21,8 @@ public class ArgAvailable {
    public boolean match(String arg){
         return (arg.equals(fullName) || arg.equals(shortcut));
    }
+
+    public String getShortcut() {
+        return shortcut;
+    }
 }
