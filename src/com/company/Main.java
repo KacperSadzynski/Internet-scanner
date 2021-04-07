@@ -1,7 +1,9 @@
 package com.company;
 
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -11,7 +13,6 @@ public class Main {
     /** List of permitted agrs **/
     private static List<ArgAvailable> argList = new ArrayList<>();
     private static ArgAvailable help;
-
     /**
      * setArgList method fills the argList with allowed arguments by reading the file "args.txt"
      **/
@@ -49,6 +50,10 @@ public class Main {
                     args[i] = argList.get(j).getShortcut();
                     argList.remove(j);
                     flag = true;
+                    if (args[i].equals("-w")) {
+                        IPv4Addresses setFlag = new IPv4Addresses(true);
+                    }
+
                     break;
                 }
             }
@@ -59,6 +64,7 @@ public class Main {
         return true;
     }
     public static void main(String[] args) throws IOException {
+        IPv4Addresses setFlag = new IPv4Addresses(true);
        setArgList();
         /*
        try {
@@ -72,7 +78,7 @@ public class Main {
         */
         System.out.println("Running DNS Scanner");
         DNSScanner scanner = new DNSScanner();
-        scanner.scan();
+        scanner.doStuff();
 
         for(int i = 0; i < args.length; i++) {
             switch (args[i]){
@@ -100,6 +106,9 @@ public class Main {
                 }
                 case "-mc": {
                     System.out.println("Running MemCached Scanner Scanner");
+                    break;
+                }
+                case "-w": {
                     break;
                 }
             }

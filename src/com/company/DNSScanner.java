@@ -1,13 +1,7 @@
 package com.company;
 
+import java.io.*;
 import java.net.*;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.util.Scanner;
 
 /**
  * DNSScanner class creates a socket bound to port 53 and a UDP packet for DNS protocol
@@ -16,6 +10,13 @@ import java.util.Scanner;
  **/
 public class DNSScanner extends IPv4Addresses {
     private static final int DNS_SERVER_PORT = 53;
+
+    public DNSScanner() {
+        File file = new File("DNS_Vulnerable.txt");
+        if(file.exists()){
+           file.delete();
+        }
+    }
 
     public void doStuff() throws IOException {
         scan();
@@ -84,19 +85,21 @@ public class DNSScanner extends IPv4Addresses {
             socket.receive(packet);
 
             socket.close();
-            //Info how many bytes received
-            System.out.println("\n\nReceived: " + packet.getLength() + " bytes");
-            System.out.println(serverAddress.toString());
-            //for tests:
-            Scanner sc = new Scanner(System.in);
-            String flag = sc.nextLine();
+            if(packet.getLength() >= dnsFrame.length*2){
+                if (toFile) {
+                    //File file = new File("DNS_Vulnerable.txt");
+                    FileWriter fileWriter = new FileWriter("DNS_Vulnerable.txt", true); //Set true for append mode
+                    PrintWriter printWriter = new PrintWriter(fileWriter);
+                    printWriter.println("DNS IP address " + serverAddress.toString() + " " + packet.getLength() +" bytes received");
+                    printWriter.close();
+                }
+                System.out.println("DNS IP address " + serverAddress.toString() + " " + packet.getLength() +" bytes received");
+            }
         }
-        catch(SocketTimeoutException e)
-        {
+        catch(SocketTimeoutException e) {
             socket.close();
         }
-        catch(SocketException e)
-        {
+        catch(SocketException e) {
             socket.close();
         }
     }

@@ -1,7 +1,5 @@
 package com.company;
 
-import java.util.Objects;
-
 /**
  * ArgAvailable class keeps the information about a single permitted argument (full name and shortcut)
  * which you can write in the command line while running the program

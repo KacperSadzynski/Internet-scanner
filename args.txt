@@ -8,3 +8,5 @@
 -n
 --MemCached
 -mc
+--write
+-w

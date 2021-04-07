@@ -6,7 +6,12 @@ import java.net.InetAddress;
 
 public class IPv4Addresses {
 
-    public void scan() throws IOException {
+    protected static boolean toFile;
+    static{
+    toFile = false;
+    }
+
+    protected void scan() throws IOException {
         Integer[] rawIPList = new Integer[] {0, 0, 0, 0};
 
         /** Generating all IPv4 addresses **/
@@ -19,9 +24,10 @@ public class IPv4Addresses {
                     for(int l=0; l<256;l++){
                         rawIPList[3]=l;
                         String address = rawIPList[0].toString()+"."+rawIPList[1].toString()+"."+rawIPList[2].toString()+"."+rawIPList[3].toString();
-                        if (address.equals("0.0.0.0"))
+                        if (address.equals("0.0.0.0")) {
                             continue;
-                        System.out.println(address);
+                        }
+                        //System.out.println(address);
                         //address = "8.8.8.8";
                         InetAddress current = InetAddress.getByName(address);
                         query(current);
@@ -31,7 +37,13 @@ public class IPv4Addresses {
         }
     }
 
-    public void query(InetAddress dest) throws IOException {
+    protected void query(InetAddress dest) throws IOException {
+    }
 
+    public IPv4Addresses(){
+    }
+
+    public IPv4Addresses(boolean f){
+        toFile = f;
     }
 }
