@@ -1,10 +1,7 @@
 package com.company;
 
 
-import org.w3c.dom.ls.LSOutput;
-
 import java.io.*;
-import java.net.DatagramSocket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -73,6 +70,9 @@ public class Main {
            return;
        }
         */
+        System.out.println("Running DNS Scanner");
+        DNSScanner scanner = new DNSScanner();
+        scanner.scan();
 
         for(int i = 0; i < args.length; i++) {
             switch (args[i]){
@@ -86,6 +86,8 @@ public class Main {
                 }
                 case "-d": {
                     System.out.println("Running DNS Scanner");
+                    //DNSScanner scanner = new DNSScanner();
+                    //scanner.scan();
                     break;
                 }
                 case "-s": {
