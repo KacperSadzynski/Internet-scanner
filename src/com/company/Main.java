@@ -1,9 +1,11 @@
 package com.company;
 
 
+import snmp.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -63,7 +65,7 @@ public class Main {
         }
         return true;
     }
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, SNMPBadValueException, SNMPGetException {
         IPv4Addresses setFlag = new IPv4Addresses(true);
        setArgList();
         /*
@@ -76,9 +78,22 @@ public class Main {
            return;
        }
         */
+        InetAddress hostAddress = InetAddress.getByName("10.0.1.1");
+        String community = "public";
+        int version = 0;    // SNMPv1
+        String itemID = "1.3.6.1.2.1.1.1.0";
+        SNMPv1CommunicationInterface comInterface = new SNMPv1CommunicationInterface(version, hostAddress, community);
+        System.out.println("Retrieving value corresponding to OID " + itemID);
+        SNMPVarBindList newVars = comInterface.getMIBEntry(itemID);
+        SNMPSequence pair = (snmp.SNMPSequence)(newVars.getSNMPObjectAt(0));
+        SNMPObject snmpValue = pair.getSNMPObjectAt(1);
+        System.out.println("Retrieved value: type " + snmpValue.getClass().getName() + ", value " + snmpValue.toString());
+        /*
         System.out.println("Running DNS Scanner");
         DNSScanner scanner = new DNSScanner();
         scanner.doStuff();
+
+         */
 
         for(int i = 0; i < args.length; i++) {
             switch (args[i]){

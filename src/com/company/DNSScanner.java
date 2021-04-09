@@ -3,6 +3,7 @@ package com.company;
 import java.io.*;
 import java.net.*;
 
+
 /**
  * DNSScanner class creates a socket bound to port 53 and a UDP packet for DNS protocol
  * It scans all public IPv4 addresses by sending to all available DNS servers query and waiting for respond
