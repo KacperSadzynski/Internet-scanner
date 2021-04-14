@@ -77,32 +77,51 @@ public class Main {
            System.out.println("Wrong argument list. Type --help or -h to check command list");
            return;
        }
-        */
-        InetAddress hostAddress = InetAddress.getByName("10.0.1.1");
-        String community = "public";
-        int version = 0;    // SNMPv1
-        String itemID = "1.3.6.1.2.1.1.1.0";
-        SNMPv1CommunicationInterface comInterface = new SNMPv1CommunicationInterface(version, hostAddress, community);
-        System.out.println("Retrieving value corresponding to OID " + itemID);
-        SNMPVarBindList newVars = comInterface.getMIBEntry(itemID);
-        SNMPSequence pair = (snmp.SNMPSequence)(newVars.getSNMPObjectAt(0));
-        SNMPObject snmpValue = pair.getSNMPObjectAt(1);
-        System.out.println("Retrieved value: type " + snmpValue.getClass().getName() + ", value " + snmpValue.toString());
+         */
+        /** For test purposes**/
+        List<String> domains = new ArrayList<>();
+        List<String> typeID = new ArrayList<>();
+
+        File file = new File("domains.txt");
+        Scanner in = new Scanner(file);
+        while(in.hasNext()){
+            domains.add(in.nextLine());
+        }
+        in.close();
+        File file2 = new File("typeID.txt");
+        Scanner in2 = new Scanner(file2);
+        while(in2.hasNext()) {
+            typeID.add(in2.nextLine());
+        }
+        int max = 0;
+        for(String a : domains){
+            for(String b : typeID){
+                int pom = 0;
+                DNSScanner scanner = new DNSScanner();
+                pom = scanner.testScan(a, b,"8.8.8.8");
+                if(pom>max){
+                    max = pom;
+                }
+            }
+        }
+        in2.close();
+        System.out.println("Max length found: " + max);
         /*
         System.out.println("Running DNS Scanner");
         DNSScanner scanner = new DNSScanner();
         scanner.doStuff();
-
-         */
-
+*/
         for(int i = 0; i < args.length; i++) {
             switch (args[i]){
                 case "-h": {
+                    /*
                     File file = new File("help.txt");
                     Scanner in = new Scanner(file);
                     while(in.hasNext()){
                         System.out.println(in.nextLine());
                     }
+
+                     */
                     break;
                 }
                 case "-d": {
