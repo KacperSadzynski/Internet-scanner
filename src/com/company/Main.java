@@ -1,7 +1,6 @@
 package com.company;
 
 
-import snmp.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -65,8 +64,41 @@ public class Main {
         }
         return true;
     }
-    public static void main(String[] args) throws IOException, SNMPBadValueException, SNMPGetException {
-        IPv4Addresses setFlag = new IPv4Addresses(true);
+   /** For test purposes**/
+    public static void serachingDNSamplificationt() throws IOException{
+            List<String> domains = new ArrayList<>();
+            List<String> typeID = new ArrayList<>();
+            File file3 = new File("DNS_Vulnerable.txt");
+            if(file3.exists()){
+                file3.delete();
+            }
+            File file = new File("domains.txt");
+            Scanner in = new Scanner(file);
+            while(in.hasNext()){
+                domains.add(in.nextLine());
+            }
+            in.close();
+            File file2 = new File("typeID.txt");
+            Scanner in2 = new Scanner(file2);
+            while(in2.hasNext()) {
+                typeID.add(in2.nextLine());
+            }
+            int max = 0;
+            for(String a : domains){
+                for(String b : typeID){
+                    int pom = 0;
+                    DNSScanner scanner = new DNSScanner();
+                    pom = scanner.testScan(a, b,"8.8.8.8");
+                    if(pom>max){
+                        max = pom;
+                    }
+                }
+            }
+            in2.close();
+            System.out.println("Max length found: " + max);
+    }
+    public static void main(String[] args) throws IOException {
+       //IPv4Addresses setFlag = new IPv4Addresses(true);
        setArgList();
         /*
        try {
@@ -78,39 +110,11 @@ public class Main {
            return;
        }
          */
-        /** For test purposes**/
-        List<String> domains = new ArrayList<>();
-        List<String> typeID = new ArrayList<>();
 
-        File file = new File("domains.txt");
-        Scanner in = new Scanner(file);
-        while(in.hasNext()){
-            domains.add(in.nextLine());
-        }
-        in.close();
-        File file2 = new File("typeID.txt");
-        Scanner in2 = new Scanner(file2);
-        while(in2.hasNext()) {
-            typeID.add(in2.nextLine());
-        }
-        int max = 0;
-        for(String a : domains){
-            for(String b : typeID){
-                int pom = 0;
-                DNSScanner scanner = new DNSScanner();
-                pom = scanner.testScan(a, b,"8.8.8.8");
-                if(pom>max){
-                    max = pom;
-                }
-            }
-        }
-        in2.close();
-        System.out.println("Max length found: " + max);
-        /*
-        System.out.println("Running DNS Scanner");
-        DNSScanner scanner = new DNSScanner();
+        System.out.println("Running SNMP Scanner");
+        SNMPScanner scanner = new SNMPScanner();
         scanner.doStuff();
-*/
+
         for(int i = 0; i < args.length; i++) {
             switch (args[i]){
                 case "-h": {
@@ -132,6 +136,8 @@ public class Main {
                 }
                 case "-s": {
                     System.out.println("Running SNMP Scanner");
+                    //SNMPScanner scanner = new SNMPScanner();
+                    //scanner.scan();
                     break;
                 }
                 case "-n": {

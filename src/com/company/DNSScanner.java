@@ -74,13 +74,15 @@ public class DNSScanner extends IPv4Addresses {
         //System.out.println("Sending: " + dnsFrame.length + " bytes to " + domain + " domain with typeID " + type);
 
         /** sending DNS packet **/
-        DatagramSocket socket = new DatagramSocket();
-        DatagramPacket dnsReqPacket = new DatagramPacket(dnsFrame, dnsFrame.length, current, DNS_SERVER_PORT);
+        DatagramSocket socket = null;
+        DatagramPacket dnsReqPacket = null;
+        DatagramPacket packet = null;
         try{
+            socket = new DatagramSocket();
+            dnsReqPacket = new DatagramPacket(dnsFrame, dnsFrame.length, current, DNS_SERVER_PORT);
             socket.send(dnsReqPacket);
-
             byte[] buf = new byte[2048];
-            DatagramPacket packet = new DatagramPacket(buf, buf.length);
+            packet = new DatagramPacket(buf, buf.length);
             //Waiting for a response limited by 20 ms
             socket.setSoTimeout(20);
             socket.receive(packet);
@@ -92,11 +94,15 @@ public class DNSScanner extends IPv4Addresses {
             //System.out.println(packet.getLength() +" bytes received");
             return packet.getLength();
         }
-        catch(SocketTimeoutException e) {
-            socket.close();
-        }
-        catch(SocketException e) {
-            socket.close();
+        catch(Exception e){}
+        finally {
+             if (socket != null) {
+                try {
+                    socket.close();
+                } catch (NullPointerException ex1) {
+                    socket = null;
+                }
+             }
         }
         return 0;
     }
@@ -159,13 +165,15 @@ public class DNSScanner extends IPv4Addresses {
 
  */
         /** sending DNS packet **/
-        DatagramSocket socket = new DatagramSocket();
-        DatagramPacket dnsReqPacket = new DatagramPacket(dnsFrame, dnsFrame.length, serverAddress, DNS_SERVER_PORT);
+         DatagramSocket socket = null;
+         DatagramPacket dnsReqPacket = null;
+         DatagramPacket packet = null;
         try{
+            socket = new DatagramSocket();
+            dnsReqPacket = new DatagramPacket(dnsFrame, dnsFrame.length, serverAddress, DNS_SERVER_PORT);
             socket.send(dnsReqPacket);
-            
             byte[] buf = new byte[2048];
-            DatagramPacket packet = new DatagramPacket(buf, buf.length);
+            packet = new DatagramPacket(buf, buf.length);
             //Waiting for a response limited by 20 ms
             socket.setSoTimeout(20);
             socket.receive(packet);
@@ -225,11 +233,15 @@ public class DNSScanner extends IPv4Addresses {
                  */
             }
         }
-        catch(SocketTimeoutException e) {
-            socket.close();
-        }
-        catch(SocketException e) {
-            socket.close();
+        catch(Exception e){}
+        finally {
+            if (socket != null) {
+                try {
+                    socket.close();
+                } catch (NullPointerException ex1) {
+                    socket = null;
+                }
+            }
         }
     }
 }
