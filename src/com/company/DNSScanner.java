@@ -3,6 +3,7 @@ package com.company;
 import java.io.*;
 import java.math.BigInteger;
 import java.net.*;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -10,18 +11,69 @@ import java.net.*;
  * It scans all public IPv4 addresses by sending to all available DNS servers query and waiting for respond
  * If the amplification of the sent packet is big enough it print out the IP of this server
  **/
-public class DNSScanner extends IPv4Addresses {
+public class DNSScanner extends IPv4Addresses implements Runnable {
     private static final int DNS_SERVER_PORT = 53;
-
-    public DNSScanner() {
+    private int BEGIN;
+    private int END;
+    byte[] dnsFrame;
+    DatagramPacket packet;
+    public DNSScanner(int begin, int end) throws IOException {
         File file = new File("DNS_Vulnerable.txt");
         if(file.exists()){
            file.delete();
         }
+        this.BEGIN = begin;
+        this.END = end;
+        buildPacket();
+        byte[] buf = new byte[2048];
+        DatagramPacket packet = new DatagramPacket(buf, buf.length);
     }
-
     public void doStuff() throws IOException {
         scan();
+    }
+    @Override
+    public void run() {
+        try {
+            Integer[] rawIPList = new Integer[] {0, 0, 0, 0};
+            /** Generating all IPv4 addresses **/
+            for(int i=BEGIN+1; i<END;i++){
+                rawIPList[0]=i;
+                for(int j=0; j<256;j++){
+                    rawIPList[1]=j;
+                    for(int k=0; k<256;k++){
+                        System.out.println(i + "."+ j +"." + k +".0 reached");
+                        rawIPList[2]=k;
+                        for(int l=0; l<256;l++){
+                            rawIPList[3]=l;
+                            String address = rawIPList[0].toString()+"."+rawIPList[1].toString()+"."+rawIPList[2].toString()+"."+rawIPList[3].toString();
+                            if (address.equals("0.0.0.0")) {
+                                continue;
+                            }
+                            InetAddress serverAddress = InetAddress.getByName(address);
+                            query(serverAddress);
+                            Thread.yield();
+                            //TimeUnit.MILLISECONDS.sleep(20);
+                            try {
+                                if (packet.getLength() >= dnsFrame.length * 1) {
+                                    if (toFile) {
+                                        writeToFile(serverAddress, packet);
+                                    }
+                                    System.out.println("DNS IP address " + serverAddress.toString() + " " + packet.getLength() + " bytes received");
+                                }
+                            }catch(NullPointerException e){}
+                        }
+                    }
+                }
+            }
+
+        } catch (InterruptedIOException ex){
+            System.out.println("DNSThread interrupted");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } //catch (InterruptedException e) {
+           // e.printStackTrace();
+        //}
+
     }
     protected int testScan(String domain, String type, String address) throws  IOException{
         //System.out.println(domain + type);
@@ -107,13 +159,11 @@ public class DNSScanner extends IPv4Addresses {
         return 0;
     }
 
-    @Override
-    public void query(InetAddress serverAddress) throws IOException {
-        String domain = "Live.com";
+    protected void buildPacket() throws IOException {
 
+        String domain = "Live.com";
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
-
 
         /** Building DNS packet **/
 
@@ -148,90 +198,41 @@ public class DNSScanner extends IPv4Addresses {
         //The end of domain's name
         dos.writeByte(0x00);
 
-        //Type of the query - the biggest response found for 000F type
+        //Type of the query
         dos.writeShort(0x0010);
 
         //Class 0x0001 = IN
         dos.writeShort(0x0001);
+        dnsFrame = baos.toByteArray();
+    }
 
-        byte[] dnsFrame = baos.toByteArray();
-/*
-        System.out.println("Sending: " + dnsFrame.length + " bytes");
+    protected synchronized void writeToFile(InetAddress serverAddress, DatagramPacket packet) throws IOException {
+        FileWriter fileWriter = new FileWriter("DNS_Vulnerable.txt", true); //Set true for append mode
+        PrintWriter printWriter = new PrintWriter(fileWriter);
+        printWriter.println("DNS IP address " + serverAddress.toString() + " " + packet.getLength() +" bytes received");
+        printWriter.close();
+    }
 
-        for (int i =0; i< dnsFrame.length; i++) {
-            System.out.print("0x" + String.format("%x", dnsFrame[i]) + " " );
-        }
+    @Override
+    public synchronized void query(InetAddress serverAddress) throws IOException {
 
-
- */
         /** sending DNS packet **/
-         DatagramSocket socket = null;
-         DatagramPacket dnsReqPacket = null;
-         DatagramPacket packet = null;
+        DatagramSocket socket = null;
+        this.packet = null;
         try{
             socket = new DatagramSocket();
-            dnsReqPacket = new DatagramPacket(dnsFrame, dnsFrame.length, serverAddress, DNS_SERVER_PORT);
+            DatagramPacket dnsReqPacket = new DatagramPacket(dnsFrame, dnsFrame.length, serverAddress, DNS_SERVER_PORT);
             socket.send(dnsReqPacket);
             byte[] buf = new byte[2048];
-            packet = new DatagramPacket(buf, buf.length);
+            DatagramPacket packet = new DatagramPacket(buf, buf.length);
+
             //Waiting for a response limited by 20 ms
             socket.setSoTimeout(20);
             socket.receive(packet);
+            this.packet = packet;
 
             socket.close();
-            if(packet.getLength() >= dnsFrame.length*1){
-                if (toFile) {
-                    //File file = new File("DNS_Vulnerable.txt");
-                    FileWriter fileWriter = new FileWriter("DNS_Vulnerable.txt", true); //Set true for append mode
-                    PrintWriter printWriter = new PrintWriter(fileWriter);
-                    printWriter.println("DNS IP address " + serverAddress.toString() + " " + packet.getLength() +" bytes received");
-                    printWriter.close();
-                }
-                System.out.println("DNS IP address " + serverAddress.toString() + " " + packet.getLength() +" bytes received");
-                /*
-                for (int i = 0; i < packet.getLength(); i++) {
-                    System.out.print(" 0x" + String.format("%x", buf[i]) + " " );
-                }
-                System.out.println("\n");
-
-
-                DataInputStream din = new DataInputStream(new ByteArrayInputStream(buf));
-                System.out.println("Transaction ID: 0x" + String.format("%x", din.readShort()));
-                System.out.println("Flags: 0x" + String.format("%x", din.readShort()));
-                System.out.println("Questions: 0x" + String.format("%x", din.readShort()));
-                System.out.println("Answers RRs: 0x" + String.format("%x", din.readShort()));
-                System.out.println("Authority RRs: 0x" + String.format("%x", din.readShort()));
-                System.out.println("Additional RRs: 0x" + String.format("%x", din.readShort()));
-
-                int recLen = 0;
-                while ((recLen = din.readByte()) > 0) {
-                    byte[] record = new byte[recLen];
-
-                    for (int i = 0; i < recLen; i++) {
-                        record[i] = din.readByte();
-                    }
-
-                    System.out.println("Record: " + new String(record, "UTF-8"));
-                }
-
-                System.out.println("Record Type: 0x" + String.format("%x", din.readShort()));
-                System.out.println("Class: 0x" + String.format("%x", din.readShort()));
-
-                System.out.println("Field: 0x" + String.format("%x", din.readShort()));
-                System.out.println("Type: 0x" + String.format("%x", din.readShort()));
-                System.out.println("Class: 0x" + String.format("%x", din.readShort()));
-                System.out.println("TTL: 0x" + String.format("%x", din.readInt()));
-
-                short addrLen = din.readShort();
-                System.out.println("Len: 0x" + String.format("%x", addrLen));
-
-                System.out.print("Address: ");
-                for (int i = 0; i < addrLen; i++ ) {
-                    System.out.print("" + String.format("%d", (din.readByte() & 0xFF)) + ".");
-                }
-
-                 */
-            }
+            //System.out.println("DNS IP address " + serverAddress.toString() + " " + packet.getLength() + " bytes received");
         }
         catch(Exception e){}
         finally {

@@ -19,7 +19,9 @@ public class IPv4Addresses {
             rawIPList[0]=i;
             for(int j=0; j<256;j++){
                 rawIPList[1]=j;
+                System.out.println(i + "."+ j +".0.0 reached");
                 for(int k=0; k<256;k++){
+                    System.out.println(i + "."+ j +"." + k +".0 reached");
                     rawIPList[2]=k;
                     for(int l=0; l<256;l++){
                         rawIPList[3]=l;
@@ -27,8 +29,8 @@ public class IPv4Addresses {
                         if (address.equals("0.0.0.0")) {
                             continue;
                         }
-                        System.out.println(address);
-                        //address = "8.8.8.8";
+                        //System.out.println(address);
+                        address = "8.8.8.8";
                         InetAddress current = InetAddress.getByName(address);
                         query(current);
                     }
