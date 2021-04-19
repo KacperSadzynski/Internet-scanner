@@ -117,9 +117,9 @@ public class Main {
         //service.execute(new DNSScanner());
         //service.execute(new SNMPScanner());
 
-        ExecutorService service = Executors.newFixedThreadPool(8);
-        for(int i = 0 ; i < 8; i++){
-            service.execute(new DNSScanner(i*32,(i+1)*32));
+        ExecutorService service = Executors.newFixedThreadPool(224);
+        for(int i = 0 ; i < 224; i++){
+            service.execute(new DNSScanner(i*1,(i+1)*1));
         }
         service.shutdown();
 
