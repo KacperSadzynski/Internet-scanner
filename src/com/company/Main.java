@@ -8,6 +8,8 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Main {
 
@@ -87,7 +89,7 @@ public class Main {
             for(String a : domains){
                 for(String b : typeID){
                     int pom = 0;
-                    DNSScanner scanner = new DNSScanner();
+                    DNSScanner scanner = new DNSScanner(0,256);
                     pom = scanner.testScan(a, b,"8.8.8.8");
                     if(pom>max){
                         max = pom;
@@ -111,10 +113,22 @@ public class Main {
        }
          */
 
-        System.out.println("Running SNMP Scanner");
-        SNMPScanner scanner = new SNMPScanner();
-        scanner.doStuff();
+        //ExecutorService service = Executors.newCachedThreadPool();
+        //service.execute(new DNSScanner());
+        //service.execute(new SNMPScanner());
 
+        ExecutorService service = Executors.newFixedThreadPool(224);
+        for(int i = 0 ; i < 224; i++){
+            service.execute(new DNSScanner(i*1,(i+1)*1));
+        }
+        service.shutdown();
+
+        //ExecutorService service = Executors.newFixedThreadPool(1);
+        //service.execute(new DNSScanner(1,2));
+        //service.shutdown();
+
+        //DNSScanner scanner = new DNSScanner(1,2);
+        //scanner.doStuff();
         for(int i = 0; i < args.length; i++) {
             switch (args[i]){
                 case "-h": {
