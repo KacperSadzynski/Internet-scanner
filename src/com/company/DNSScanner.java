@@ -13,10 +13,8 @@ import java.util.concurrent.TimeUnit;
  **/
 public class DNSScanner extends IPv4Addresses implements Runnable {
     private static final int DNS_SERVER_PORT = 53;
-    private int BEGIN;
-    private int END;
+
     byte[] dnsFrame;
-    DatagramPacket packet;
     public DNSScanner(int begin, int end) throws IOException {
         File file = new File("DNS_Vulnerable.txt");
         if(file.exists()){
@@ -25,8 +23,6 @@ public class DNSScanner extends IPv4Addresses implements Runnable {
         this.BEGIN = begin;
         this.END = end;
         buildPacket();
-        byte[] buf = new byte[2048];
-        DatagramPacket packet = new DatagramPacket(buf, buf.length);
     }
     public void doStuff() throws IOException {
         scan();
@@ -34,49 +30,10 @@ public class DNSScanner extends IPv4Addresses implements Runnable {
     @Override
     public void run() {
         try {
-            Integer[] rawIPList = new Integer[] {0, 0, 0, 0};
-            /** Generating all IPv4 addresses **/
-            for(int i=BEGIN; i<END;i++){
-                if(i == 0 || i== 10 || i == 127)
-                    continue;
-                rawIPList[0]=i;
-                for(int j=0; j<256;j++){
-                    rawIPList[1]=j;
-                    System.out.println(i + "."+ j +".0.0 reached");
-                    for(int k=0; k<256;k++){
-                        if(i>0)
-                            //System.out.println(i + "."+ j +"." + k +".0 reached");
-                        rawIPList[2]=k;
-                        for(int l=0; l<256;l++){
-                            rawIPList[3]=l;
-                            String address = rawIPList[0].toString()+"."+rawIPList[1].toString()+"."+rawIPList[2].toString()+"."+rawIPList[3].toString();
-                            if (address.equals("255.255.255.255")) {
-                                continue;
-                            }
-                            InetAddress serverAddress = InetAddress.getByName(address);
-                            query(serverAddress);
-                            //Thread.yield();
-                            //TimeUnit.MILLISECONDS.sleep(BEGIN);
-                            try {
-                                if (packet.getLength() >= dnsFrame.length * 1) {
-                                    if (toFile) {
-                                        writeToFile(serverAddress, packet);
-                                    }
-                                    System.out.println("DNS IP address " + serverAddress.toString() + " " + packet.getLength() + " bytes received");
-                                }
-                            }catch(NullPointerException e){}
-                        }
-                    }
-                }
-            }
-
-        } catch (InterruptedIOException ex){
-            System.out.println("DNSThread interrupted");
+            scan();
         } catch (IOException e) {
             e.printStackTrace();
-        } //catch (InterruptedException e) {
-           // e.printStackTrace();
-        //}
+        }
 
     }
     protected int testScan(String domain, String type, String address) throws  IOException{
@@ -222,7 +179,6 @@ public class DNSScanner extends IPv4Addresses implements Runnable {
 
         /** sending DNS packet **/
         DatagramSocket socket = null;
-        this.packet = null;
         try{
             socket = new DatagramSocket();
 
@@ -232,12 +188,18 @@ public class DNSScanner extends IPv4Addresses implements Runnable {
             byte[] buf = new byte[2048];
             DatagramPacket packet = new DatagramPacket(buf, buf.length);
 
-            //Waiting for a response limited by 20 ms
+            //Waiting for a response limited by 40 ms
             socket.setSoTimeout(40);
             socket.receive(packet);
-            this.packet = packet;
-
             socket.close();
+            try {
+                if (packet.getLength() >= dnsFrame.length * 1) {
+                    if (toFile) {
+                        writeToFile(serverAddress, packet);
+                    }
+                    System.out.println("DNS IP address " + serverAddress.toString() + " " + packet.getLength() + " bytes received");
+                }
+            }catch(NullPointerException e){}
         }
         catch(SocketTimeoutException e) {
             //System.out.println("Rzucono TimeoutException");

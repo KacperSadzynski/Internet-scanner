@@ -10,14 +10,21 @@ import org.snmp4j.smi.OctetString;
 import org.snmp4j.smi.VariableBinding;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
 
-import java.io.IOException;
-import java.io.InterruptedIOException;
+import java.io.*;
+import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.util.Scanner;
 
 public class SNMPScanner extends IPv4Addresses implements Runnable{
     public static final int SNMP_SERVER_PORT = 161;
-
+    public SNMPScanner(int begin, int end){
+        File file = new File("SNMP_Vulnerable.txt");
+        if(file.exists()){
+            file.delete();
+        }
+        this.BEGIN=begin;
+        this.END=end;
+    }
     public void run() {
         try {
             scan();
@@ -28,7 +35,12 @@ public class SNMPScanner extends IPv4Addresses implements Runnable{
         }
 
     }
-
+    public synchronized void writeToFile(InetAddress serverAddress, PDU response) throws IOException {
+        FileWriter fileWriter = new FileWriter("SNMP_Vulnerable.txt", true); //Set true for append mode
+        PrintWriter printWriter = new PrintWriter(fileWriter);
+        printWriter.println("SNMP IP address " + serverAddress.toString() + " " + response.getBERLength() +" bytes received");
+        printWriter.close();
+    }
     @Override
     public void query(InetAddress serverAddress) throws IOException {
 
@@ -38,7 +50,7 @@ public class SNMPScanner extends IPv4Addresses implements Runnable{
          target.setAddress(address);
          target.setVersion(SnmpConstants.version2c);
          target.setTimeout(50);
-         target.setRetries(3);
+         target.setRetries(0);
          Snmp snmp = null;
          try {
             PDU pdu = new PDU();
@@ -51,11 +63,14 @@ public class SNMPScanner extends IPv4Addresses implements Runnable{
             //System.out.println(pdu.getBERLength() + " bytes sent."); //na potrzeby testów jak narazie :)
             //System.out.println("PeerAddress:" + respEvent.getPeerAddress());
             PDU response = respEvent.getResponse();
-
+            
             if (response != null) {
+                if(pdu.getBERLength()<response.getBERLength()){
                 System.out.println(response.getBERLength() + " bytes received");
-                //Scanner scan = new Scanner(System.in);
-                //String firstName = scan.nextLine();
+                if(toFile){
+                    writeToFile(serverAddress, response);
+                }
+            }
 
                 for (int i = 0; i < response.size(); i++) {
                     VariableBinding vb = response.get(i);

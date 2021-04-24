@@ -100,7 +100,7 @@ public class Main {
             System.out.println("Max length found: " + max);
     }
     public static void main(String[] args) throws IOException {
-       //IPv4Addresses setFlag = new IPv4Addresses(true);
+       IPv4Addresses setFlag = new IPv4Addresses(true);
        setArgList();
         /*
        try {
@@ -112,23 +112,21 @@ public class Main {
            return;
        }
          */
-
-        //ExecutorService service = Executors.newCachedThreadPool();
-        //service.execute(new DNSScanner());
-        //service.execute(new SNMPScanner());
-
-        ExecutorService service = Executors.newFixedThreadPool(224);
+/*
+        ExecutorService serviceDNS = Executors.newFixedThreadPool(224);
         for(int i = 0 ; i < 224; i++){
-            service.execute(new DNSScanner(i*1,(i+1)*1));
+            serviceDNS.execute(new DNSScanner(i*1,(i+1)*1));
         }
-        service.shutdown();
+        serviceDNS.shutdown();
 
-        //ExecutorService service = Executors.newFixedThreadPool(1);
-        //service.execute(new DNSScanner(1,2));
-        //service.shutdown();
 
-        //DNSScanner scanner = new DNSScanner(1,2);
-        //scanner.doStuff();
+ */
+        ExecutorService serviceSNMP = Executors.newFixedThreadPool(1);
+        for(int i = 0 ; i < 1; i++){
+            serviceSNMP.execute(new SNMPScanner(192,(193)));
+        }
+        serviceSNMP.shutdown();
+
         for(int i = 0; i < args.length; i++) {
             switch (args[i]){
                 case "-h": {
