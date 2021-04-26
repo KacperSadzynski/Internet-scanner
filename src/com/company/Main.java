@@ -112,20 +112,18 @@ public class Main {
            return;
        }
          */
-/*
+
         ExecutorService serviceDNS = Executors.newFixedThreadPool(224);
         for(int i = 0 ; i < 224; i++){
             serviceDNS.execute(new DNSScanner(i*1,(i+1)*1));
         }
-        serviceDNS.shutdown();
 
-
- */
-        ExecutorService serviceSNMP = Executors.newFixedThreadPool(1);
+        ExecutorService serviceSNMP = Executors.newFixedThreadPool(224);
         for(int i = 0 ; i < 1; i++){
-            serviceSNMP.execute(new SNMPScanner(192,(193)));
+            serviceSNMP.execute(new SNMPScanner(i*1,(i+1)*1));
         }
         serviceSNMP.shutdown();
+        serviceDNS.shutdown();
 
         for(int i = 0; i < args.length; i++) {
             switch (args[i]){

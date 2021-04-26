@@ -1,4 +1,4 @@
 package com.company;
 
-public class NTPScanner {
+public class NTPScanner extends IPv4Addresses {
 }

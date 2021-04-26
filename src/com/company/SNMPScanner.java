@@ -65,18 +65,12 @@ public class SNMPScanner extends IPv4Addresses implements Runnable{
             PDU response = respEvent.getResponse();
             
             if (response != null) {
-                if(pdu.getBERLength()<response.getBERLength()){
-                System.out.println(response.getBERLength() + " bytes received");
+                if(pdu.getBERLength()<=response.getBERLength()){
+                System.out.println("DNS IP address " + serverAddress.toString() + " " + response.getBERLength() + " bytes received");
                 if(toFile){
                     writeToFile(serverAddress, response);
                 }
             }
-
-                for (int i = 0; i < response.size(); i++) {
-                    VariableBinding vb = response.get(i);
-                    System.out.println(vb.getOid() + " = " + vb.getVariable());
-                }
-
             }
         } catch (Exception e) {}
         finally {
