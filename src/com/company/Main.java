@@ -11,14 +11,21 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * The Main class runs scanners typed by a user
+ * Instance Variables:
+ * List<ArgAvailable> argList - list of available args that user can type
+ * static ArgAvailable help - something truly special
+ */
 public class Main {
 
-    /** List of permitted agrs **/
     private static List<ArgAvailable> argList = new ArrayList<>();
     private static ArgAvailable help;
+
     /**
      * setArgList method fills the argList with allowed arguments by reading the file "args.txt"
-     **/
+     *
+     */
     private static void setArgList() throws FileNotFoundException {
         File file = new File("args.txt");
         Scanner in = new Scanner(file);
@@ -29,15 +36,15 @@ public class Main {
     }
 
     /**
-     * verificationArgs method checks all arguments write by user in command line while running the program
-     * It throws an Exception/false when user typed:
-     * unavailable argument
-     * twice or more the same argument
-     * --help or -h along with the other arguments
-     **/
+     * verificationArgs method checks all arguments written by a user in the command line
+     * @return boolean FALSE if user typed unavailable argument,
+     *                       twice or more the same argument
+     *                       --help or -h along with the other arguments
+     *                 TRUE in other cases
+     */
     private static boolean verificationArgs(String [] args){
 
-        /** checking if --help or -h has been typed **/
+        /* checking if --help or -h has been typed */
         if(help.match(args[0]) && args.length == 1) {
             args[0] = help.getShortcut();
             return true;
@@ -45,7 +52,7 @@ public class Main {
         else if (help.match(args[0])) {
             return false;
         }
-        /** checking the rest of arguments typed by an user **/
+        /* checking the rest of arguments typed by an user */
         for(int i = 0; i < args.length; i++) {
             boolean  flag = false; //is argument given by an user available
             for( int j = 0; j < argList.size(); j++){
@@ -66,8 +73,13 @@ public class Main {
         }
         return true;
     }
-   /** For test purposes**/
-    public static void serachingDNSamplificationt() throws IOException{
+   /**
+    * UNUSED
+    * For test purposes
+    * @throws IOException
+    * @see IOException
+    */
+    public static void searchingDNSAmplification() throws IOException{
             List<String> domains = new ArrayList<>();
             List<String> typeID = new ArrayList<>();
             File file3 = new File("DNS_Vulnerable.txt");
@@ -99,6 +111,14 @@ public class Main {
             in2.close();
             System.out.println("Max length found: " + max);
     }
+
+    /**
+     * Verify args written by a user
+     * If everything is alright then it runs all wanted functions simultaneously
+     * @param args arguments written by a user in the list of arguments
+     * @throws IOException
+     * @see IOException
+     */
     public static void main(String[] args) throws IOException {
        IPv4Addresses setFlag = new IPv4Addresses(true);
        setArgList();
@@ -112,18 +132,20 @@ public class Main {
            return;
        }
          */
-
+        /*
         ExecutorService serviceDNS = Executors.newFixedThreadPool(224);
         for(int i = 0 ; i < 224; i++){
             serviceDNS.execute(new DNSScanner(i*1,(i+1)*1));
         }
+        serviceDNS.shutdown();
 
-        ExecutorService serviceSNMP = Executors.newFixedThreadPool(224);
+         */
+        ExecutorService serviceSNMP = Executors.newFixedThreadPool(1);
         for(int i = 0 ; i < 1; i++){
-            serviceSNMP.execute(new SNMPScanner(i*1,(i+1)*1));
+            serviceSNMP.execute(new SNMPScanner(192,193));
         }
         serviceSNMP.shutdown();
-        serviceDNS.shutdown();
+
 
         for(int i = 0; i < args.length; i++) {
             switch (args[i]){
