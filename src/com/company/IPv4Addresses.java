@@ -5,11 +5,12 @@ import java.io.InterruptedIOException;
 import java.net.InetAddress;
 
 /**
- * IPv4Addresses is the superclass, any other Scanner classes inherit from this class, this class is only for inheritance purposes
- * Instance Variables:
- * static boolean toFile - subclasses use this to decide whether they write to file their output or not, by default set to FALSE
- * int BEGIN, END - use to limit the IPv4 scan range, used only by scan() method
- * e.g setting BEGIN to 1 and END to 2 means that method scan() generates addresses from 1.0.0.0 to 1.255.255.255 only
+ * IPv4Addresses is the <b/>superclass</b>, any other Scanner classes inherit from this class<br/>
+ * this class is only for inheritance purposes<br/>
+ * Instance Variables:<br/>
+ * static boolean toFile - subclasses use this to decide whether they write to file their output or not, by default set to FALSE<br/>
+ * int BEGIN, END - use to limit the IPv4 scan range, used only by scan() method<br/>
+ * <b/>e.g</b> setting BEGIN to 1 and END to 2 means that method scan() generates addresses from 1.0.0.0 to 1.255.255.255 only<br/>
  */
 public class IPv4Addresses {
 
@@ -21,10 +22,9 @@ public class IPv4Addresses {
     protected int END;
 
     /**
-     * Generates IPv4 addresses limited by BEGIN, END variables
-     * For each generated address, query() method is being used
+     * Generates IPv4 addresses limited by BEGIN, END variables<br/>
+     * For each generated address, query() method is being used<br/>
      * @throws IOException
-     * @see IOException
      */
     protected void scan() throws IOException {
         Integer[] rawIPList = new Integer[] {0, 0, 0, 0};
@@ -59,22 +59,20 @@ public class IPv4Addresses {
     }
 
     /**
-     * An abstract method, subclasses use this method to send different types of queries
+     * An abstract method, subclasses use this method to send different types of queries<br/>
      * @param dest on this address, the query is being sent
      * @throws IOException
-     * @see IOException
      */
     protected void query(InetAddress dest) throws IOException {}
 
     /**
      * Default constructor
      */
-    public IPv4Addresses(){
-    }
+    public IPv4Addresses(){}
 
     /**
-     * Constructor
-     * Used when a user writes -w in args
+     * Constructor<br/>
+     * Used when a user writes -w in args<br/>
      * @param f used to set  toFile variable
      */
     public IPv4Addresses(boolean f){

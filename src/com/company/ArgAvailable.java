@@ -2,9 +2,9 @@ package com.company;
 
 /**
  * ArgAvailable class keeps the information about a single permitted argument (full name and shortcut)
- * which user can write in the command line
- * Instance Variables:
- * final String fullName - represents full name of an argument
+ * which user can write in the command line<br/>
+ * Instance Variables:<br/>
+ * final String fullName - represents full name of an argument<br/>
  * final String shortcut - represents short name of an argument
  */
 public class ArgAvailable {
@@ -14,7 +14,7 @@ public class ArgAvailable {
 
 
     /**
-     * Constructor
+     * Constructor<br/>
      * @param fullName used to set fullName variable
      * @param shortcut used to set shortcut variable
      */

@@ -7,15 +7,16 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
- * DNSScanner class inherits from the IPv4Addresses class and Runnable interface
- * By default, this class is being executed by a thread but for test purposes method testScan can be used as well
- * It builds a DNS packet that is sent by query(), then a thread execute run() method
- * It scans all public IPv4 addresses limited by BEGIN, END variables
- * If the amplification of the sent packet is big enough it print out the IP of this server
- * If the toFile flag is TRUE it writes to DNS_Vulnerable.txt file output as well
- * Instance Variables:
- * static final int DNS_SERVER_PORT - represents DNS server port, set on 53
- * byte[] dnsFrame - byte array that represents DNS packet
+ * DNSScanner class inherits from the IPv4Addresses class and Runnable interface<br/>
+ * By default, this class is being executed by a thread but for test purposes method testScan can be used as well<br/>
+ * It builds a DNS packet that is sent by query(), then a thread execute run() method<br/>
+ * It scans all public IPv4 addresses limited by BEGIN, END variables<br/>
+ * If the amplification of the sent packet is big enough it print out the IP of this server<br/>
+ * If the toFile flag is TRUE it writes to DNS_Vulnerable.txt file output as well<br/>
+ * Instance Variables:<br/>
+ * static final int DNS_SERVER_PORT - represents DNS server port, set on 53<br/>
+ * byte[] dnsFrame - byte array that represents DNS packet<br/>
+ * @see IPv4Addresses
  */
 public class DNSScanner extends IPv4Addresses implements Runnable {
 
@@ -23,13 +24,12 @@ public class DNSScanner extends IPv4Addresses implements Runnable {
     byte[] dnsFrame;
 
     /**
-     * Constructor
-     * It removes file DNS_Vulnerable.txt if exists to avoid appending new output to the old one
-     * Builds dnsFrame byte array using the buildPacket() method
+     * Constructor<br/>
+     * It removes file DNS_Vulnerable.txt if exists to avoid appending new output to the old one<br/>
+     * Builds dnsFrame byte array using the buildPacket() method<br/>
      * @param begin used to set BEGIN variable
      * @param end used to set END variable
      * @throws IOException
-     * @see IOException
      */
     public DNSScanner(int begin, int end) throws IOException {
         File file = new File("DNS_Vulnerable.txt");
@@ -42,19 +42,18 @@ public class DNSScanner extends IPv4Addresses implements Runnable {
     }
 
     /**
-     * UNUSED
-     * Scans IPv4 addresses pool limited by BEGIN, END variables
-     * Used when DNSScanner class was not executed by a thread
+     * UNUSED<br/>
+     * Scans IPv4 addresses pool limited by BEGIN, END variables<br/>
+     * Used when DNSScanner class was not executed by a thread<br/>
      * @throws IOException
-     * @see IOException
      */
     public void doStuff() throws IOException {
         scan();
     }
 
     /**
-     * Scans IPv4 addresses pool limited by BEGIN, END variables
-     * This method is being executed by a thread only
+     * Scans IPv4 addresses pool limited by BEGIN, END variables<br/>
+     * This method is being executed by a thread only<br/>
      */
     @Override
     public void run() {
@@ -67,15 +66,14 @@ public class DNSScanner extends IPv4Addresses implements Runnable {
     }
 
     /**
-     * UNUSED
-     * Method wrote to find the best amplification with a variety of different types of queries on different sites
-     * All queries were being tested on 8.8.8.8 IP address
+     * UNUSED<br/>
+     * Method wrote to find the best amplification with a variety of different types of queries on different sites<br/>
+     * All queries were being tested on 8.8.8.8 IP address<br/>
      * @param domain represents a domain
      * @param type represents a type of query
      * @param address represents IP address on which method sends a query
      * @return int This returns 0 if an error is being occurred or number of bytes received form DNS server on specific query
      * @throws IOException
-     * @see IOException
      */
     protected int testScan(String domain, String type, String address) throws  IOException{
 
@@ -161,10 +159,9 @@ public class DNSScanner extends IPv4Addresses implements Runnable {
     }
 
     /**
-     * Builds a DNS packet
-     * build packet is being saved to dnsFrame, which is a byte array
+     * Builds a DNS packet<br/>
+     * build packet is being saved to dnsFrame, which is a byte array<br/>
      * @throws IOException
-     * @see IOException
      */
     protected void buildPacket() throws IOException {
 
@@ -214,12 +211,11 @@ public class DNSScanner extends IPv4Addresses implements Runnable {
     }
 
     /**
-     * The method that creates the file "DNS_Vulnerable.txt" and appends found results
-     * It is synchronized to avoid sharing the same resources among threats
+     * The method that creates the file "DNS_Vulnerable.txt" and appends found results<br/>
+     * It is synchronized to avoid sharing the same resources among threats<br/>
      * @param serverAddress used to represent IP address in a string, using toString method
      * @param packet used to write a number of received bytes, using getLength method
      * @throws IOException
-     * @see IOException
      */
     protected synchronized void writeToFile(InetAddress serverAddress, DatagramPacket packet) throws IOException {
         FileWriter fileWriter = new FileWriter("DNS_Vulnerable.txt", true); //Set true for append mode
@@ -229,13 +225,12 @@ public class DNSScanner extends IPv4Addresses implements Runnable {
     }
 
     /**
-     * Creates a socket with UDP transport protocol
-     * Sends a query to a specific IP address, then waits a limited time for an answer
-     * If an answer was received it checks its length
-     * When conditions were met, method prints out the message and write to File if toFile flag equals TRUE
+     * Creates a socket with UDP transport protocol<br/>
+     * Sends a query to a specific IP address, then waits a limited time for an answer<br/>
+     * If an answer was received it checks its length<br/>
+     * When conditions were met, method prints out the message and write to File if toFile flag equals TRUE<br/>
      * @param serverAddress represents an IP address on which method sends a query
      * @throws IOException
-     * @see IOException
      */
     @Override
     public void query(InetAddress serverAddress) throws IOException {

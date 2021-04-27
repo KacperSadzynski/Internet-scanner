@@ -12,9 +12,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * The Main class runs scanners typed by a user
- * Instance Variables:
- * List<ArgAvailable> argList - list of available args that user can type
+ * The Main class runs scanners typed by a user <br/>
+ * Instance Variables: <br/>
+ * List<ArgAvailable> argList - list of available args that user can type <br/>
  * static ArgAvailable help - something truly special
  */
 public class Main {
@@ -24,7 +24,7 @@ public class Main {
 
     /**
      * setArgList method fills the argList with allowed arguments by reading the file "args.txt"
-     *
+     * @throws FileNotFoundException
      */
     private static void setArgList() throws FileNotFoundException {
         File file = new File("args.txt");
@@ -36,7 +36,7 @@ public class Main {
     }
 
     /**
-     * verificationArgs method checks all arguments written by a user in the command line
+     * verificationArgs method checks all arguments written by a user in the command line <br/>
      * @return boolean FALSE if user typed unavailable argument,
      *                       twice or more the same argument
      *                       --help or -h along with the other arguments
@@ -74,10 +74,9 @@ public class Main {
         return true;
     }
    /**
-    * UNUSED
+    * UNUSED<br/>
     * For test purposes
     * @throws IOException
-    * @see IOException
     */
     public static void searchingDNSAmplification() throws IOException{
             List<String> domains = new ArrayList<>();
@@ -113,11 +112,10 @@ public class Main {
     }
 
     /**
-     * Verify args written by a user
-     * If everything is alright then it runs all wanted functions simultaneously
+     * Verify args written by a user<br/>
+     * If everything is alright then it runs all wanted functions simultaneously<br/>
      * @param args arguments written by a user in the list of arguments
      * @throws IOException
-     * @see IOException
      */
     public static void main(String[] args) throws IOException {
        IPv4Addresses setFlag = new IPv4Addresses(true);
