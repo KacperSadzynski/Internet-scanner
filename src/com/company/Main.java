@@ -138,13 +138,18 @@ public class Main {
         serviceDNS.shutdown();
 
          */
+        /*
         ExecutorService serviceSNMP = Executors.newFixedThreadPool(1);
         for(int i = 0 ; i < 1; i++){
             serviceSNMP.execute(new SNMPScanner(192,193));
         }
         serviceSNMP.shutdown();
-
-
+        */
+        ExecutorService serviceNTP = Executors.newFixedThreadPool(1);
+        for(int i = 0 ; i < 1; i++){
+            serviceNTP.execute(new NTPScanner(193,194));
+        }
+        serviceNTP.shutdown();
         for(int i = 0; i < args.length; i++) {
             switch (args[i]){
                 case "-h": {
