@@ -20,15 +20,25 @@ public class NTPScanner extends IPv4Addresses implements Runnable{
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
 
-        //LI-VN-Mode-R-E-M-Opcode-Sequence 00 010 110 0 0 0 00010 0000000000000000
-        dos.writeShort(0x16020000);
-        dos.writeShort(0x00000000);
-        dos.writeShort(0x00000000);
-        dos.writeShort(0x00000000);
-        dos.writeShort(0x00000000);
-        dos.writeShort(0x00000000);
-        dos.writeShort(0x00000000);
-        dos.writeShort(0x00000000);
+        //LI-VN-Mode-R-E-M-Opcode-Sequence 00 010 110 0 0 0 00010 0000000000000001
+        dos.writeShort(0x1602);
+        dos.writeShort(0x0001);
+        dos.writeShort(0x0000);
+        dos.writeShort(0x0000);
+        dos.writeShort(0x0000);
+        dos.writeShort(0x0000);
+        dos.writeShort(0x0000);
+        dos.writeShort(0x0000);
+        dos.writeShort(0x0000);
+        dos.writeShort(0x0000);
+        dos.writeShort(0x0000);
+        dos.writeShort(0x0000);
+        dos.writeShort(0x0000);
+        dos.writeShort(0x0000);
+        dos.writeShort(0x0000);
+        dos.writeShort(0x0000);
+
+
         ntpFrame = baos.toByteArray();
     }
 
@@ -48,8 +58,8 @@ public class NTPScanner extends IPv4Addresses implements Runnable{
             try{
                 socket = new DatagramSocket();
 
-                DatagramPacket dnsReqPacket = new DatagramPacket(ntpFrame, ntpFrame.length, serverAddress, NTP_SERVER_PORT);
-                socket.send(dnsReqPacket);
+                DatagramPacket ntpReqPacket = new DatagramPacket(ntpFrame, ntpFrame.length, serverAddress, NTP_SERVER_PORT);
+                socket.send(ntpReqPacket);
 
                 byte[] buf = new byte[2048];
                 DatagramPacket packet = new DatagramPacket(buf, buf.length);
@@ -63,15 +73,15 @@ public class NTPScanner extends IPv4Addresses implements Runnable{
                         if (toFile) {
                             //writeToFile(serverAddress, packet);
                         }
-                        System.out.println("NTP IP address " + serverAddress.toString() + " " + packet.getLength() + " bytes received");
+                        System.out.println(ntpReqPacket.getLength() + " bytes sent;\nNTP IP address " + serverAddress.toString() + " " + packet.getLength() + " bytes received");
                     }
                 }catch(NullPointerException e){}
             }
             catch(SocketTimeoutException e) {
-                System.out.println("TimeoutException");
+                //System.out.println("TimeoutException");
             }
             catch(SocketException e) {
-                System.out.println("SocketException");
+                //System.out.println("SocketException");
             }
             finally {
                 if (socket != null) {

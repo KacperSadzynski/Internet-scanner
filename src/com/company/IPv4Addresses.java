@@ -45,7 +45,7 @@ public class IPv4Addresses {
                             if (address.equals("255.255.255.255"))
                                 continue;
                             //address = "8.8.8.8";
-                            System.out.println(address);
+                            //System.out.println(address);
                             InetAddress current = InetAddress.getByName(address);
                             query(current);
                         }
