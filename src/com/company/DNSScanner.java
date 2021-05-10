@@ -32,7 +32,9 @@ public class DNSScanner extends IPv4Addresses implements Runnable {
      * @throws IOException
      */
     public DNSScanner(int begin, int end) throws IOException {
-        File file = new File("DNS_Vulnerable.txt");
+        packetType = "DNS";
+        fileName = "DNS_Vulnerable.txt";
+        File file = new File(fileName);
         if(file.exists()){
            file.delete();
         }
@@ -209,21 +211,7 @@ public class DNSScanner extends IPv4Addresses implements Runnable {
         dos.writeShort(0x0001);
         dnsFrame = baos.toByteArray();
     }
-
-    /**
-     * The method that creates the file "DNS_Vulnerable.txt" and appends found results<br/>
-     * It is synchronized to avoid sharing the same resources among threats<br/>
-     * @param serverAddress used to represent IP address in a string, using toString method
-     * @param packet used to write a number of received bytes, using getLength method
-     * @throws IOException
-     */
-    protected synchronized void writeToFile(InetAddress serverAddress, DatagramPacket packet) throws IOException {
-        FileWriter fileWriter = new FileWriter("DNS_Vulnerable.txt", true); //Set true for append mode
-        PrintWriter printWriter = new PrintWriter(fileWriter);
-        printWriter.println("DNS IP address " + serverAddress.toString() + " " + packet.getLength() +" bytes received");
-        printWriter.close();
-    }
-
+    
     /**
      * Creates a socket with UDP transport protocol<br/>
      * Sends a query to a specific IP address, then waits a limited time for an answer<br/>
@@ -255,7 +243,7 @@ public class DNSScanner extends IPv4Addresses implements Runnable {
                     if (toFile) {
                         writeToFile(serverAddress, packet);
                     }
-                    System.out.println("DNS IP address " + serverAddress.toString() + " " + packet.getLength() + " bytes received");
+                    System.out.println(dnsReqPacket.getLength() + " bytes sent;\nDNS IP address " + serverAddress.toString() + " " + packet.getLength() + " bytes received");
                 }
             }catch(NullPointerException e){}
         }

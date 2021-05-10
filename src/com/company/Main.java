@@ -146,8 +146,8 @@ public class Main {
         serviceSNMP.shutdown();
         */
 
-        ExecutorService serviceNTP = Executors.newFixedThreadPool(1);
-        for(int i = 0 ; i < 1; i++){
+        ExecutorService serviceNTP = Executors.newFixedThreadPool(2);
+        for(int i = 0 ; i < 2; i++){
             serviceNTP.execute(new NTPScanner(193,194));
         }
         serviceNTP.shutdown();

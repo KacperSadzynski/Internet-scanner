@@ -36,7 +36,9 @@ public class SNMPScanner extends IPv4Addresses implements Runnable{
      * @param end used to set END variable
      */
     public SNMPScanner(int begin, int end){
-        File file = new File("SNMP_Vulnerable.txt");
+        packetType = "SNMP";
+        fileName = "SNMP_Vulnerable.txt";
+        File file = new File(fileName);
         if(file.exists()){
             file.delete();
         }
@@ -65,10 +67,10 @@ public class SNMPScanner extends IPv4Addresses implements Runnable{
      * @param response used to write a number of received bytes, using getBERLength method
      * @throws IOException
      */
-    public synchronized void writeToFile(InetAddress serverAddress, PDU response) throws IOException {
-        FileWriter fileWriter = new FileWriter("SNMP_Vulnerable.txt", true); //Set true for append mode
+    public synchronized void writeToFileSNMP(InetAddress serverAddress, PDU response) throws IOException {
+        FileWriter fileWriter = new FileWriter(fileName, true); //Set true for append mode
         PrintWriter printWriter = new PrintWriter(fileWriter);
-        printWriter.println("SNMP IP address " + serverAddress.toString() + " " + response.getBERLength() +" bytes received");
+        printWriter.println(packetType + " IP address " + serverAddress.toString() + " " + response.getBERLength() +" bytes received");
         printWriter.close();
     }
 
@@ -106,7 +108,7 @@ public class SNMPScanner extends IPv4Addresses implements Runnable{
                 if(pdu.getBERLength()<=response.getBERLength()){
                     System.out.println("SNMP IP address " + serverAddress.toString() + " " + response.getBERLength() + " bytes received");
                     if(toFile) {
-                        writeToFile(serverAddress, response);
+                        writeToFileSNMP(serverAddress, response);
                     }
                 }
             }

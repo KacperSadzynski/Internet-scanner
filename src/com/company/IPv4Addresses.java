@@ -1,7 +1,10 @@
 package com.company;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InterruptedIOException;
+import java.io.PrintWriter;
+import java.net.DatagramPacket;
 import java.net.InetAddress;
 
 /**
@@ -10,6 +13,8 @@ import java.net.InetAddress;
  * Instance Variables:<br/>
  * static boolean toFile - subclasses use this to decide whether they write to file their output or not, by default set to FALSE<br/>
  * int BEGIN, END - use to limit the IPv4 scan range, used only by scan() method<br/>
+ * String packetType - represents type of a packet which will be printed out in a message, used in writeToFile method<br/>
+ * String fileName - represents a name of a file in which a message will be printed out<br/>
  * <b/>e.g</b> setting BEGIN to 1 and END to 2 means that method scan() generates addresses from 1.0.0.0 to 1.255.255.255 only<br/>
  */
 public class IPv4Addresses {
@@ -20,6 +25,7 @@ public class IPv4Addresses {
     }
     protected int BEGIN;
     protected int END;
+    protected String packetType, fileName;
 
     /**
      * Generates IPv4 addresses limited by BEGIN, END variables<br/>
@@ -78,5 +84,18 @@ public class IPv4Addresses {
      */
     public IPv4Addresses(boolean f){
         toFile = f;
+    }
+    /**
+     * The method that creates the file and appends found results<br/>
+     * It is synchronized to avoid sharing the same resources among threats<br/>
+     * @param serverAddress used to represent IP address in a string, using toString method
+     * @param packet used to write a number of received bytes, using getLength method
+     * @throws IOException
+     */
+    protected synchronized void writeToFile(InetAddress serverAddress, DatagramPacket packet) throws IOException {
+        FileWriter fileWriter = new FileWriter(fileName, true); //Set true for append mode
+        PrintWriter printWriter = new PrintWriter(fileWriter);
+        printWriter.println(packetType + " IP address " + serverAddress.toString() + " " + packet.getLength() +" bytes received");
+        printWriter.close();
     }
 }
