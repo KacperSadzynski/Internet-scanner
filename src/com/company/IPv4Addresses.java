@@ -85,6 +85,7 @@ public class IPv4Addresses {
     public IPv4Addresses(boolean f){
         toFile = f;
     }
+
     /**
      * The method that creates the file and appends found results<br/>
      * It is synchronized to avoid sharing the same resources among threats<br/>
