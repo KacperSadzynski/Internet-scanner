@@ -39,10 +39,10 @@ public class IPv4Addresses {
                 rawIPList[0] = i;
                 if (i == 0 || i == 10 || i == 127)
                     continue;
-                for (int j = 110; j < 256; j++) {
+                for (int j = 0; j < 256; j++) {
                     rawIPList[1] = j;
                     System.out.println(i + "." + j + ".0.0 reached");
-                    for (int k = 137; k < 256; k++) {
+                    for (int k = 0; k < 256; k++) {
                         //System.out.println(i + "." + j + "." + k + ".0 reached");
                         rawIPList[2] = k;
                         for (int l = 0; l < 256; l++) {

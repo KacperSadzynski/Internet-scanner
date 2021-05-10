@@ -41,6 +41,12 @@ public class DNSScanner extends IPv4Addresses implements Runnable {
         this.BEGIN = begin;
         this.END = end;
         buildPacket();
+        if(toFile) {
+            FileWriter fileWriter = new FileWriter(fileName, true); //Set true for append mode
+            PrintWriter printWriter = new PrintWriter(fileWriter);
+            printWriter.println(dnsFrame.length + " bytes sent\n");
+            printWriter.close();
+        }
     }
 
     /**
@@ -243,7 +249,7 @@ public class DNSScanner extends IPv4Addresses implements Runnable {
                     if (toFile) {
                         writeToFile(serverAddress, packet);
                     }
-                    System.out.println(dnsReqPacket.getLength() + " bytes sent;\nDNS IP address " + serverAddress.toString() + " " + packet.getLength() + " bytes received");
+                    System.out.println("DNS IP address " + serverAddress.toString() + "\t" + dnsReqPacket.getLength() + " bytes sent " + packet.getLength() + " bytes received");
                 }
             }catch(NullPointerException e){}
         }

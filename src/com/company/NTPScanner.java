@@ -37,6 +37,12 @@ public class NTPScanner extends IPv4Addresses implements Runnable{
         this.BEGIN = begin;
         this.END = end;
         buildPacket();
+        if(toFile) {
+            FileWriter fileWriter = new FileWriter(fileName, true); //Set true for append mode
+            PrintWriter printWriter = new PrintWriter(fileWriter);
+            printWriter.println(ntpFrame.length + " bytes sent\n");
+            printWriter.close();
+        }
     }
     
     /**
@@ -113,7 +119,7 @@ public class NTPScanner extends IPv4Addresses implements Runnable{
                         if (toFile) {
                             writeToFile(serverAddress, packet);
                         }
-                        System.out.println(ntpReqPacket.getLength() + " bytes sent;\nNTP IP address " + serverAddress.toString() + " " + packet.getLength() + " bytes received");
+                        System.out.println("NTP IP address " + serverAddress.toString() + "\t" + ntpReqPacket.getLength() + " bytes sent " + packet.getLength() + " bytes received");
                     }
                 }catch(NullPointerException e){}
             }

@@ -137,18 +137,18 @@ public class Main {
         }
         serviceDNS.shutdown();
 
-         */
-        /*
+
         ExecutorService serviceSNMP = Executors.newFixedThreadPool(1);
         for(int i = 0 ; i < 1; i++){
             serviceSNMP.execute(new SNMPScanner(192,193));
         }
         serviceSNMP.shutdown();
+
         */
 
-        ExecutorService serviceNTP = Executors.newFixedThreadPool(2);
-        for(int i = 0 ; i < 2; i++){
-            serviceNTP.execute(new NTPScanner(193,194));
+        ExecutorService serviceNTP = Executors.newFixedThreadPool(224);
+        for(int i = 0 ; i < 224; i++){
+            serviceNTP.execute(new NTPScanner(i*1,(i+1)*1));
         }
         serviceNTP.shutdown();
 
