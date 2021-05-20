@@ -1,5 +1,0 @@
-32 bytes sent
-
-NTP IP address /193.0.0.228 484 bytes received
-NTP IP address /193.0.0.229 484 bytes received
-NTP IP address /193.0.0.230 484 bytes received

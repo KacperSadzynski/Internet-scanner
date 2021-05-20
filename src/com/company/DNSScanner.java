@@ -251,7 +251,7 @@ public class DNSScanner extends IPv4Addresses implements Runnable {
                     }
                     System.out.println("DNS IP address " + serverAddress.toString() + "\t" + dnsReqPacket.getLength() + " bytes sent " + packet.getLength() + " bytes received");
                 }
-            }catch(NullPointerException e){}
+            } catch(NullPointerException e){}
         }
         catch(SocketTimeoutException e) {
             //System.out.println("TimeoutException");

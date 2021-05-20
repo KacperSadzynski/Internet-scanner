@@ -10,8 +10,8 @@ import java.net.*;
  * If the amplification of the sent packet is big enough it print out the IP of this server<br/>
  * If the toFile flag is TRUE it writes to NTP_Vulnerable.txt file output as well<br/>
  * Instance Variables:<br/>
- * static final int NTP_SERVER_PORT - represents DNS server port, set on 53<br/>
- * byte[] ntpFrame - byte array that represents DNS packet<br/>
+ * static final int NTP_SERVER_PORT - represents NTP server port, set on 123<br/>
+ * byte[] ntpFrame - byte array that represents NTP packet<br/>
  * @see IPv4Addresses
  */
 public class NTPScanner extends IPv4Addresses implements Runnable{
@@ -90,7 +90,7 @@ public class NTPScanner extends IPv4Addresses implements Runnable{
             e.printStackTrace();
         }
     }
-        /**
+     /**
      * Creates a socket with UDP transport protocol<br/>
      * Sends a query to a specific IP address, then waits a limited time for an answer<br/>
      * If an answer was received it checks its length<br/>
@@ -101,42 +101,42 @@ public class NTPScanner extends IPv4Addresses implements Runnable{
     @Override
     public void query(InetAddress serverAddress) throws IOException {
     DatagramSocket socket = null;
-            try{
-                socket = new DatagramSocket();
+        try{
+            socket = new DatagramSocket();
 
-                DatagramPacket ntpReqPacket = new DatagramPacket(ntpFrame, ntpFrame.length, serverAddress, NTP_SERVER_PORT);
-                socket.send(ntpReqPacket);
+            DatagramPacket ntpReqPacket = new DatagramPacket(ntpFrame, ntpFrame.length, serverAddress, NTP_SERVER_PORT);
+            socket.send(ntpReqPacket);
 
-                byte[] buf = new byte[2048];
-                DatagramPacket packet = new DatagramPacket(buf, buf.length);
+            byte[] buf = new byte[2048];
+            DatagramPacket packet = new DatagramPacket(buf, buf.length);
 
-                //Waiting for a response limited by 40 ms
-                socket.setSoTimeout(40);
-                socket.receive(packet);
-                socket.close();
+            //Waiting for a response limited by 40 ms
+            socket.setSoTimeout(40);
+            socket.receive(packet);
+            socket.close();
+            try {
+                if (packet.getLength() >= ntpFrame.length * 1) {
+                    if (toFile) {
+                        writeToFile(serverAddress, packet);
+                    }
+                    System.out.println("NTP IP address " + serverAddress.toString() + "\t" + ntpReqPacket.getLength() + " bytes sent " + packet.getLength() + " bytes received");
+                }
+            } catch(NullPointerException e){}
+        }
+        catch(SocketTimeoutException e) {
+            //System.out.println("TimeoutException");
+        }
+        catch(SocketException e) {
+            //System.out.println("SocketException");
+        }
+        finally {
+            if (socket != null) {
                 try {
-                    if (packet.getLength() >= ntpFrame.length * 1) {
-                        if (toFile) {
-                            writeToFile(serverAddress, packet);
-                        }
-                        System.out.println("NTP IP address " + serverAddress.toString() + "\t" + ntpReqPacket.getLength() + " bytes sent " + packet.getLength() + " bytes received");
-                    }
-                }catch(NullPointerException e){}
-            }
-            catch(SocketTimeoutException e) {
-                //System.out.println("TimeoutException");
-            }
-            catch(SocketException e) {
-                //System.out.println("SocketException");
-            }
-            finally {
-                if (socket != null) {
-                    try {
-                        socket.close();
-                    } catch (NullPointerException ex1) {
-                        socket = null;
-                    }
+                    socket.close();
+                } catch (NullPointerException ex1) {
+                    socket = null;
                 }
             }
+        }
     }
 }

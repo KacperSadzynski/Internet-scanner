@@ -145,13 +145,20 @@ public class Main {
         serviceSNMP.shutdown();
 
         */
-
+        /*
         ExecutorService serviceNTP = Executors.newFixedThreadPool(224);
         for(int i = 0 ; i < 224; i++){
             serviceNTP.execute(new NTPScanner(i*1,(i+1)*1));
         }
         serviceNTP.shutdown();
+        */
 
+
+        ExecutorService serviceMemCached = Executors.newFixedThreadPool(1);
+        for(int i = 0 ; i < 1; i++){
+            serviceMemCached.execute(new MemCachedScanner(192,193));
+        }
+        serviceMemCached.shutdown();
 
 
         for(int i = 0; i < args.length; i++) {
