@@ -154,9 +154,9 @@ public class Main {
         */
 
 
-        ExecutorService serviceMemCached = Executors.newFixedThreadPool(1);
-        for(int i = 0 ; i < 1; i++){
-            serviceMemCached.execute(new MemCachedScanner(192,193));
+        ExecutorService serviceMemCached = Executors.newFixedThreadPool(256);
+        for(int i = 0 ; i < 256; i++){
+            serviceMemCached.execute(new MemCachedScanner(i*1,(i+1)*1));
         }
         serviceMemCached.shutdown();
 

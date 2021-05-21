@@ -35,13 +35,13 @@ public class IPv4Addresses {
     protected void scan() throws IOException {
         Integer[] rawIPList = new Integer[] {0, 0, 0, 0};
         try {
-            for (int i = BEGIN; i < END; i++) {
+            for (int i = 103; i < 104; i++) {
                 rawIPList[0] = i;
                 if (i == 0 || i == 10 || i == 127)
                     continue;
-                for (int j = 168; j < 256; j++) {
+                for (int j = BEGIN; j < END; j++) {
                     rawIPList[1] = j;
-                    System.out.println(i + "." + j + ".0.0 reached");
+                    //System.out.println(i + "." + j + ".0.0 reached");
                     for (int k = 0; k < 256; k++) {
                         //System.out.println(i + "." + j + "." + k + ".0 reached");
                         rawIPList[2] = k;
