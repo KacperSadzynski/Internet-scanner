@@ -98,6 +98,8 @@ public class MemCachedScanner extends IPv4Addresses implements Runnable{
 
         //DatagramSocket socket = null;
         Socket tcpSocket = null;
+        BufferedReader reader = null;
+        //Writer writer = null;
         try{
         /*
             socket = new DatagramSocket();
@@ -124,47 +126,48 @@ public class MemCachedScanner extends IPv4Addresses implements Runnable{
 
 
             //////////////////////TCP
-            Socket clientSocket = null;
-            DataOutputStream os = null;
-            BufferedReader is = null;
-            DataInputStream ds = null;
-
-            // Initialization section:
-            // Try to open a socket on the given port
-            // Try to open input and output streams
-
-
-            clientSocket = new Socket(serverAddress, MEMCACHED_SERVER_PORT);
-
-            os = new DataOutputStream(clientSocket.getOutputStream());
-            //is = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            ds = new DataInputStream( clientSocket.getInputStream());
-            os.write(memCachedFrame);
-            byte[] buf2 = new byte[4096];
-            clientSocket.setSoTimeout(100);
-            int sizeBuf=0;
-            sizeBuf = ds.read( buf2, 0, buf2.length );
-            System.out.println("jestem");
-            try {
-                if (sizeBuf >= memCachedFrame.length * 1) {
-                    if (toFile) {
-                        //writeToFile(serverAddress, packet);
-                    }
-                    System.out.println("MemCached IP address " + serverAddress.toString() + "\t" + memCachedFrame.length + " bytes sent " + sizeBuf + " bytes received");
-                }
-            }catch(NullPointerException e){}
-            clientSocket.close();
-            os.close();
-            //is.close();
-            clientSocket.close();
+            tcpSocket = new Socket(serverAddress, MEMCACHED_SERVER_PORT);
+            OutputStream output = tcpSocket.getOutputStream();
+            //writer = new OutputStreamWriter(output);
+            output.write(memCachedFrame);
+            output.flush();
+            System.out.println("Wyslano");
+            output.close();
+            InputStream input = tcpSocket.getInputStream();
+            int bytesRead = 0;
+            int bytesToRead = 4096;
+            byte[] received = new byte[bytesToRead];
+            System.out.println("Przed whilem");
+            while (bytesRead < bytesToRead) {
+                System.out.println(bytesRead);
+                int result = input.read(received, bytesRead, bytesToRead - bytesRead);
+                if (result == -1) break; // end of stream
+                bytesRead += result;
+            }
+            System.out.println("wyszlo");
+            //BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+            //String line = reader.readLine();    // reads a line of text
+            if (bytesRead>0)
+                System.out.println("MemCached IP address " + serverAddress.toString() + "\t" + memCachedFrame.length + " bytes sent " + bytesRead + " bytes received");
         }
         catch(SocketTimeoutException e) {
-            //System.out.println("TimeoutException");
+            System.out.println("TimeoutException");
         }
         catch(SocketException e) {
             //System.out.println("SocketException");
         }
+        catch(SecurityException e) {
+            System.out.println("SecurityException");
+        }
+        catch(UnknownHostException e) {
+            System.out.println("UnknownHostException");
+        }
+        catch(Exception e)
+        {
+            System.out.println("Inny wyjatek");
+        }
         finally {
+            //System.out.println("Wyszlo z traja");
             if (tcpSocket != null) {
                 try {
                     //socket.close();

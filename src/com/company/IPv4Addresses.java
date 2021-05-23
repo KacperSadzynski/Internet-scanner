@@ -35,13 +35,13 @@ public class IPv4Addresses {
     protected void scan() throws IOException {
         Integer[] rawIPList = new Integer[] {0, 0, 0, 0};
         try {
-            for (int i = 103; i < 104; i++) {
+            for (int i = 0; i < 104; i++) {
                 rawIPList[0] = i;
                 if (i == 0 || i == 10 || i == 127)
                     continue;
                 for (int j = BEGIN; j < END; j++) {
                     rawIPList[1] = j;
-                    //System.out.println(i + "." + j + ".0.0 reached");
+                    System.out.println(i + "." + j + ".0.0 reached");
                     for (int k = 0; k < 256; k++) {
                         //System.out.println(i + "." + j + "." + k + ".0 reached");
                         rawIPList[2] = k;
@@ -50,8 +50,8 @@ public class IPv4Addresses {
                             String address = rawIPList[0].toString() + "." + rawIPList[1].toString() + "." + rawIPList[2].toString() + "." + rawIPList[3].toString();
                             if (address.equals("255.255.255.255"))
                                 continue;
-                            //address = "8.8.8.8";
-                            //System.out.println(address);
+                            //address = "172.55.4.162";
+                            System.out.println(address);
                             InetAddress current = InetAddress.getByName(address);
                             query(current);
                         }
