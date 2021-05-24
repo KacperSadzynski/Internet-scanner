@@ -35,7 +35,7 @@ public class IPv4Addresses {
     protected void scan() throws IOException {
         Integer[] rawIPList = new Integer[] {0, 0, 0, 0};
         try {
-            for (int i = 0; i < 104; i++) {
+            for (int i = 103; i < 104; i++) {
                 rawIPList[0] = i;
                 if (i == 0 || i == 10 || i == 127)
                     continue;
@@ -51,7 +51,7 @@ public class IPv4Addresses {
                             if (address.equals("255.255.255.255"))
                                 continue;
                             //address = "172.55.4.162";
-                            System.out.println(address);
+                            //System.out.println(address);
                             InetAddress current = InetAddress.getByName(address);
                             query(current);
                         }
