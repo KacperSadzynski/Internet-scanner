@@ -156,7 +156,7 @@ public class Main {
 
         ExecutorService serviceMemCached = Executors.newFixedThreadPool(1);
         for(int i = 0 ; i < 1; i++){
-            serviceMemCached.execute(new MemCachedScanner(192,193));
+            serviceMemCached.execute(new MemCachedScanner(97,98));
         }
         serviceMemCached.shutdown();
 
