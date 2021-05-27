@@ -2,6 +2,10 @@ package com.company;
 
 import java.io.*;
 import java.net.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -16,7 +20,7 @@ import java.util.zip.GZIPInputStream;
  * byte[] memCachedFrame - byte array that represents MemCached packet<br/>
  * @see IPv4Addresses
  */
-public class MemCachedScanner extends IPv4Addresses implements Runnable{
+public class MemCachedScanner extends IPv4Addresses implements Runnable {
 
     public static final int MEMCACHED_SERVER_PORT = 11211;
     private byte[] memCachedFrame;
@@ -25,30 +29,33 @@ public class MemCachedScanner extends IPv4Addresses implements Runnable{
      * Constructor<br/>
      * It removes file MemCached_Vulnerable.txt if exists to avoid appending new output to the old one<br/>
      * Builds memCachedFrame byte array using the buildPacket() method<br/>
+     *
      * @param begin used to set BEGIN variable
-     * @param end used to set END variable
+     * @param end   used to set END variable
      * @throws IOException
      */
     public MemCachedScanner(int begin, int end) throws IOException {
         packetType = "MemCached";
         fileName = "MemCached_Vulnerable.txt";
         File file = new File(fileName);
-        if(file.exists()){
+        if (file.exists()) {
             file.delete();
         }
         this.BEGIN = begin;
         this.END = end;
         buildPacket();
-        if(toFile) {
+        if (toFile) {
             FileWriter fileWriter = new FileWriter(fileName, true); //Set true for append mode
             PrintWriter printWriter = new PrintWriter(fileWriter);
             printWriter.println(memCachedFrame.length + " bytes sent\n");
             printWriter.close();
         }
     }
+
     /**
      * Builds a MemCached packet<br/>
      * build packet is being saved to memCachedFrame, which is a byte array<br/>
+     *
      * @throws IOException
      */
     protected void buildPacket() throws IOException {
@@ -76,140 +83,84 @@ public class MemCachedScanner extends IPv4Addresses implements Runnable{
         //Extras, Key, Values - None
         memCachedFrame = baos.toByteArray();
     }
+
     @Override
-    public void run(){
+    public void run() {
         try {
             scan();
-        } catch (InterruptedIOException ex){
+        } catch (InterruptedIOException ex) {
             System.out.println("MemCachedThread interrupted");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
     /**
      * Creates a socket with UDP transport protocol<br/>
      * Sends a query to a specific IP address, then waits a limited time for an answer<br/>
      * If an answer was received it checks its length<br/>
      * When conditions were met, method prints out the message and write to File if toFile flag equals TRUE<br/>
+     *
      * @param serverAddress represents an IP address on which method sends a query
      * @throws IOException
      */
     @Override
     public void query(InetAddress serverAddress) {
-
-        //DatagramSocket socket = null;
         Socket tcpSocket = null;
         BufferedReader reader = null;
-        //Writer writer = null;
-        try{
-        /*
-            socket = new DatagramSocket();
-
-            DatagramPacket memCachedReqPacket = new DatagramPacket(memCachedFrame, memCachedFrame.length, serverAddress, MEMCACHED_SERVER_PORT);
-            socket.send(memCachedReqPacket);
-
-            byte[] buf = new byte[2048];
-            DatagramPacket packet = new DatagramPacket(buf, buf.length);
-
-            //Waiting for a response limited by 40 ms
-            socket.setSoTimeout(90);
-            socket.receive(packet);
-            socket.close();
-            try {
-                if (packet.getLength() >= memCachedReqPacket.getLength() * 1) {
-                    if (toFile) {
-                        writeToFile(serverAddress, packet);
-                    }
-                    System.out.println("MemCached IP address " + serverAddress.toString() + "\t" + memCachedReqPacket.getLength() + " bytes sent " + packet.getLength() + " bytes received");
-                }
-            }catch(NullPointerException e){}
-            */
-
-
-            //////////////////////TCP
+        try {
             tcpSocket = new Socket(serverAddress, MEMCACHED_SERVER_PORT);
-            //OutputStream output = tcpSocket.getOutputStream();
-            DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(tcpSocket.getOutputStream()));
-            //System.out.println(tcpSocket.getSendBufferSize());
+            Writer out = new OutputStreamWriter(tcpSocket.getOutputStream(), "ASCII");
+            BufferedReader in = new BufferedReader(new InputStreamReader(tcpSocket.getInputStream(), "ASCII"));
+            out.write("stats\r\n");
+            out.flush();
+            reader = new BufferedReader(new InputStreamReader(tcpSocket.getInputStream()));
+            String received;
+            while ((received = reader.readLine()) != null)
+            {
+                System.out.println(received);
+            }
+            reader.close();
+            tcpSocket.close();
 
-            dos.writeInt(memCachedFrame.length);
-            if(memCachedFrame.length>0){
-                dos.write(memCachedFrame,0,memCachedFrame.length);
-            }
-            //writer = new OutputStreamWriter(output);
-            //output.write(memCachedFrame);
-            //output.flush();
-            dos.close();
-            if(tcpSocket.isClosed()){
-                System.out.println("Socket closed");
-            }
-            System.out.println("Wyslano" + serverAddress.toString());
-            //output.close();
-            InputStream input = tcpSocket.getInputStream();
-            DataInputStream dis = new DataInputStream(input);
-            int len = dis.readInt();
-            byte[] data = new byte[len];
-            if(len>0){
-                dis.readFully(data);
-                System.out.println("Received "+ len +" bytes from " + serverAddress.toString());
-            }
-            /*
-            int bytesRead = 0;
-            int bytesToRead = 4096;
-            byte[] received = new byte[bytesToRead];
-            System.out.println("Przed whilem");
-            while (bytesRead < bytesToRead) {
-                System.out.println(bytesRead);
-                int result = input.read(received, bytesRead, bytesToRead - bytesRead);
-                if (result == -1) break; // end of stream
-                bytesRead += result;
-            }
-            System.out.println("wyszlo");
-            //BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-            //String line = reader.readLine();    // reads a line of text
-            if (bytesRead>0)
-                System.out.println("MemCached IP address " + serverAddress.toString() + "\t" + memCachedFrame.length + " bytes sent " + bytesRead + " bytes received");
-            */
-        }
-        catch(SocketTimeoutException e) {
-            System.out.println("IP address " + serverAddress.toString() + " TimeoutException "+ e.getMessage());
+        } catch (BindException e) {
+            System.out.println("IP address " + serverAddress.toString() + " BindException " + e.getMessage());
             //System.err.println(e.getMessage());
-        }
-        catch(SocketException e) {
-            //System.out.println("IP address " + serverAddress.toString() + " SocketException "+ e.getMessage());
+        } catch (ConnectException e) {
+            System.out.println("IP address " + serverAddress.toString() + " ConnectException " + e.getMessage());
             //System.err.println(e.getMessage());
-        }
-        catch(SecurityException e) {
-            System.out.println("IP address " + serverAddress.toString() + " SecurityException "+ e.getMessage());
+        } catch (NoRouteToHostException e) {
+            System.out.println("IP address " + serverAddress.toString() + " NoRouteToHostException " + e.getMessage());
             //System.err.println(e.getMessage());
-        }
-        catch(UnknownHostException e) {
-            System.out.println("IP address " + serverAddress.toString() + " UnknownHostException "+ e.getMessage());
+        } catch (SocketTimeoutException e) {
+            System.out.println("IP address " + serverAddress.toString() + " SocketTimeoutException " + e.getMessage());
             //System.err.println(e.getMessage());
-        }
-        catch(IOException e)
-        {
-            System.out.println("IP address " + serverAddress.toString() + " IOException "+ e.getMessage());
+        } catch (ProtocolException e) {
+            System.out.println("IP address " + serverAddress.toString() + " ProtocolException " + e.getMessage());
+            //System.err.println(e.getMessage());
+        } catch (SecurityException e) {
+            System.out.println("IP address " + serverAddress.toString() + " SecurityException " + e.getMessage());
+            //System.err.println(e.getMessage());
+        } catch (UnknownHostException e) {
+            System.out.println("IP address " + serverAddress.toString() + " UnknownHostException " + e.getMessage());
+            //System.err.println(e.getMessage());
+        } catch (IOException e) {
+            System.out.println("IP address " + serverAddress.toString() + " IOException " + e.getMessage());
             //System.err.println();
-        }
-        catch(Exception e)
-        {
-            System.out.println("IP address " + serverAddress.toString() + " Inny wyjatek "+ e.getMessage());
+        } catch (Exception e) {
+            System.out.println("IP address " + serverAddress.toString() + " Inny wyjatek " + e.getMessage());
             //System.err.println(e.getMessage());
-        }
-
-        finally {
-            //System.out.println("Wyszlo z traja");
+        } finally {
+            //if(service != null)
+            //    service.shutdownNow();
             if (tcpSocket != null) {
                 try {
                     //socket.close();
                     tcpSocket.close();
-                } catch(IOException e)
-                {
+                } catch (IOException e) {
                     System.out.println("IOException");
                     System.err.println(e.getMessage());
-                }
-                catch (NullPointerException ex1) {
+                } catch (NullPointerException ex1) {
                     //socket = null;
                     tcpSocket = null;
                 }
