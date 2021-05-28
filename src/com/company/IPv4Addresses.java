@@ -50,8 +50,8 @@ public class IPv4Addresses {
                             String address = rawIPList[0].toString() + "." + rawIPList[1].toString() + "." + rawIPList[2].toString() + "." + rawIPList[3].toString();
                             if (address.equals("255.255.255.255"))
                                 continue;
-                            //address = "172.55.4.162";
-                            //System.out.println(address);
+                            address = "103.150.0.32";
+                            System.out.println(address);
                             InetAddress current = InetAddress.getByName(address);
                             query(current);
                         }

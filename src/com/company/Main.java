@@ -118,8 +118,10 @@ public class Main {
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
-       IPv4Addresses setFlag = new IPv4Addresses(true);
+       //IPv4Addresses setFlag = new IPv4Addresses(true);
        setArgList();
+       int coreCount = Runtime.getRuntime().availableProcessors();
+       System.out.println(coreCount);
         /*
        try {
             if(!verificationArgs(args)){
@@ -131,9 +133,9 @@ public class Main {
        }
          */
         /*
-        ExecutorService serviceDNS = Executors.newFixedThreadPool(224);
+        ExecutorService serviceDNS = Executors.newFixedThreadPool(coreCount);
         for(int i = 0 ; i < 224; i++){
-            serviceDNS.execute(new DNSScanner(i*1,(i+1)*1));
+            serviceDNS.execute(new DNSScanner(i,i+1));
         }
         serviceDNS.shutdown();
 
@@ -146,17 +148,17 @@ public class Main {
 
         */
         /*
-        ExecutorService serviceNTP = Executors.newFixedThreadPool(224);
+        ExecutorService serviceNTP = Executors.newFixedThreadPool(coreCount);
         for(int i = 0 ; i < 224; i++){
-            serviceNTP.execute(new NTPScanner(i*1,(i+1)*1));
+            serviceNTP.execute(new NTPScanner(i,i+1));
         }
         serviceNTP.shutdown();
         */
 
 
-        ExecutorService serviceMemCached = Executors.newFixedThreadPool(1);
-        for(int i = 0 ; i < 1; i++){
-            serviceMemCached.execute(new MemCachedScanner(97,98));
+        ExecutorService serviceMemCached = Executors.newFixedThreadPool(coreCount);
+        for(int i = 0 ; i < 224; i++){
+            serviceMemCached.execute(new MemCachedScanner(i,i+1));
         }
         serviceMemCached.shutdown();
 
