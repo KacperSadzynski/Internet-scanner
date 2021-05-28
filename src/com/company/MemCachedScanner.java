@@ -108,7 +108,33 @@ public class MemCachedScanner extends IPv4Addresses implements Runnable {
     public void query(InetAddress serverAddress) {
         Socket tcpSocket = null;
         BufferedReader reader = null;
+        //DatagramSocket socket = null;
         try {
+            /*
+            socket = new DatagramSocket();
+
+            DatagramPacket memCachedReqPacket = new DatagramPacket(memCachedFrame, memCachedFrame.length, serverAddress, MEMCACHED_SERVER_PORT);
+            socket.send(memCachedReqPacket);
+
+            byte[] buf = new byte[2048];
+            DatagramPacket packet = new DatagramPacket(buf, buf.length);
+
+            //Waiting for a response limited by 40 ms
+            socket.setSoTimeout(40);
+            socket.receive(packet);
+            socket.close();
+            try {
+                if (packet.getLength() >= memCachedFrame.length * 1) {
+                    if (toFile) {
+                        writeToFile(serverAddress, packet);
+                    }
+                    System.out.println("MemCached IP address " + serverAddress.toString() + "\t" + memCachedReqPacket.getLength() + " bytes sent " + packet.getLength() + " bytes received");
+                }
+            }catch(NullPointerException e){}
+            */
+
+
+            ///TCP
             tcpSocket = new Socket(serverAddress, MEMCACHED_SERVER_PORT);
             Writer out = new OutputStreamWriter(tcpSocket.getOutputStream(), "ASCII");
             BufferedReader in = new BufferedReader(new InputStreamReader(tcpSocket.getInputStream(), "ASCII"));
