@@ -41,17 +41,17 @@ public class IPv4Addresses {
                     continue;
                 for (int j = BEGIN; j < END; j++) {
                     rawIPList[1] = j;
-                    System.out.println(i + "." + j + ".0.0 reached");
+                    //System.out.println(i + "." + j + ".0.0 reached");
                     for (int k = 0; k < 256; k++) {
-                        //System.out.println(i + "." + j + "." + k + ".0 reached");
+                        System.out.println(i + "." + j + "." + k + ".0 reached");
                         rawIPList[2] = k;
                         for (int l = 0; l < 256; l++) {
                             rawIPList[3] = l;
                             String address = rawIPList[0].toString() + "." + rawIPList[1].toString() + "." + rawIPList[2].toString() + "." + rawIPList[3].toString();
                             if (address.equals("255.255.255.255"))
                                 continue;
-                            //address = "172.24.12.18";
-                            System.out.println(address);
+                            address = "127.0.0.1";
+                            //System.out.println(address);
                             InetAddress current = InetAddress.getByName(address);
                             query(current);
                         }

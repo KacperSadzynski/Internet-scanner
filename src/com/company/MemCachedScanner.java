@@ -62,23 +62,23 @@ public class MemCachedScanner extends IPv4Addresses implements Runnable {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
         //Magic
-        dos.writeShort(0x80);
+        dos.writeShort(0x00);
         //Opcode
-        dos.writeShort(0x10);
+        dos.writeShort(0x00);
         //Key length
-        dos.writeShort(0x0000);
+        dos.writeShort(0x0001);
         //Extra length
         dos.writeShort(0x00);
         //Data type
-        dos.writeShort(0x00);
+        //dos.writeShort(0x00);
         //Reserved
-        dos.writeShort(0x0000);
+        dos.writeShort(0x7374);
         //Total body
-        dos.writeShort(0x00000000);
+        dos.writeShort(0x6174);
         //Opaque
-        dos.writeShort(0x00000000);
+        dos.writeShort(0x730d);
         //CAS
-        dos.writeShort(0x0000000000000000);
+        dos.writeShort(0x0a00);
 
         //Extras, Key, Values - None
         memCachedFrame = baos.toByteArray();
@@ -103,19 +103,30 @@ public class MemCachedScanner extends IPv4Addresses implements Runnable {
             DatagramPacket memCachedReqPacket = new DatagramPacket(memCachedFrame, memCachedFrame.length, serverAddress, MEMCACHED_SERVER_PORT);
             udpSocket.send(memCachedReqPacket);
 
-            byte[] buf = new byte[2048];
+            byte[] buf = new byte[4096];
             DatagramPacket packet = new DatagramPacket(buf, buf.length);
 
             //Waiting for a response limited by 40 ms
-            udpSocket.setSoTimeout(40);
-            udpSocket.receive(packet);
-            udpSocket.close();
+
+            int bytesRead = 0;
             try {
-                if (packet.getLength() >= memCachedFrame.length * 1) {
+                udpSocket.setSoTimeout(40);
+                while (true) {
+                    udpSocket.receive(packet);
+                    bytesRead += packet.getLength();
+                }
+            }catch(SocketException e){}
+            catch(SocketTimeoutException e){}
+            //udpSocket.receive(packet);
+            //System.out.println(packet.getLength());
+            //udpSocket.receive(packet);
+            //System.out.println(packet.getLength());
+            try {
+                if (bytesRead >= memCachedFrame.length * 1) {
                     if (toFile) {
                         writeToFile(serverAddress, packet);
                     }
-                        System.out.println("MemCached IP address " + serverAddress.toString() + "\t" + memCachedReqPacket.getLength() + " bytes sent " + packet.getLength() + " bytes received");
+                        System.out.println("MemCached IP address " + serverAddress.toString() + "\t" + memCachedReqPacket.getLength() + " bytes sent " + bytesRead + " bytes received");
                     }
             }catch(NullPointerException e){}
         } catch (SocketTimeoutException e) {
@@ -158,7 +169,7 @@ public class MemCachedScanner extends IPv4Addresses implements Runnable {
             //reading message by lines while line is not empty
             while ((buffer = reader.readLine()) != null){
                 received += buffer;
-                System.out.println(buffer);
+                //System.out.println(buffer);
                 if(buffer.equals("END")) break;
             }
             //System.out.println(received);
@@ -221,6 +232,6 @@ public class MemCachedScanner extends IPv4Addresses implements Runnable {
     @Override
     public void query(InetAddress serverAddress) {
         queryUDP(serverAddress);
-        //queryTCP(serverAddress);
+        queryTCP(serverAddress);
     }
 }
