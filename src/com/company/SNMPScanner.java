@@ -106,7 +106,7 @@ public class SNMPScanner extends IPv4Addresses implements Runnable{
             PDU response = respEvent.getResponse();
             if (response != null) {
                 if(pdu.getBERLength()<=response.getBERLength()){
-                    System.out.println("SNMP IP address " + serverAddress.toString() + "\t" + pdu.getBERLength() + " bytes sent " + response.getBERLength() + " bytes received");
+                    System.out.println("SNMP IP address " + serverAddress.toString() + "\t" + pdu.getBERLength() + " bytes sent " + response.getBERLength() + " bytes received with UDP");
                     if(toFile) {
                         writeToFileSNMP(serverAddress, response);
                     }

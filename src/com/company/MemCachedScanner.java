@@ -180,7 +180,7 @@ public class MemCachedScanner extends IPv4Addresses implements Runnable {
             try {
                 if (responseSize >= querySize * 1) {
                     if (toFile) {
-                        //writeToFile(serverAddress, packet);
+                        writeToFile(serverAddress, responseSize);
                     }
                         System.out.println("MemCached IP address " + serverAddress.toString() + "\t" + querySize + " bytes sent " + responseSize + " bytes received");
                 }
@@ -233,5 +233,12 @@ public class MemCachedScanner extends IPv4Addresses implements Runnable {
     public void query(InetAddress serverAddress) {
         queryUDP(serverAddress);
         queryTCP(serverAddress);
+    }
+
+    private void writeToFile(InetAddress serverAddress, int size) throws IOException {
+        FileWriter fileWriter = new FileWriter(fileName, true); //Set true for append mode
+        PrintWriter printWriter = new PrintWriter(fileWriter);
+        printWriter.println(packetType + " IP address " + serverAddress.toString() + " " + size +" bytes received with TCP");
+        printWriter.close();
     }
 }

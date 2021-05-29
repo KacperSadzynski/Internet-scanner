@@ -118,7 +118,7 @@ public class Main {
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
-       //IPv4Addresses setFlag = new IPv4Addresses(true);
+       IPv4Addresses setFlag = new IPv4Addresses(true);
        setArgList();
        int coreCount = Runtime.getRuntime().availableProcessors();
        System.out.println(coreCount);

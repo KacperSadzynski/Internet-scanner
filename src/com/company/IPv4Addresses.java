@@ -35,11 +35,11 @@ public class IPv4Addresses {
     protected void scan() throws IOException {
         Integer[] rawIPList = new Integer[] {0, 0, 0, 0};
         try {
-            for (int i = 103; i < 104; i++) {
+            for (int i = BEGIN; i < END; i++) {
                 rawIPList[0] = i;
                 if (i == 0 || i == 10 || i == 127)
                     continue;
-                for (int j = BEGIN; j < END; j++) {
+                for (int j = 0; j < 256; j++) {
                     rawIPList[1] = j;
                     //System.out.println(i + "." + j + ".0.0 reached");
                     for (int k = 0; k < 256; k++) {
@@ -96,7 +96,7 @@ public class IPv4Addresses {
     protected synchronized void writeToFile(InetAddress serverAddress, DatagramPacket packet) throws IOException {
         FileWriter fileWriter = new FileWriter(fileName, true); //Set true for append mode
         PrintWriter printWriter = new PrintWriter(fileWriter);
-        printWriter.println(packetType + " IP address " + serverAddress.toString() + " " + packet.getLength() +" bytes received");
+        printWriter.println(packetType + " IP address " + serverAddress.toString() + " " + packet.getLength() +" bytes received with UDP");
         printWriter.close();
     }
 }
