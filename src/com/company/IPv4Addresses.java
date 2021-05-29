@@ -4,8 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.io.PrintWriter;
-import java.net.DatagramPacket;
-import java.net.InetAddress;
+import java.net.*;
 
 /**
  * IPv4Addresses is the <b/>superclass</b>, any other Scanner classes inherit from this class<br/>
@@ -98,5 +97,38 @@ public class IPv4Addresses {
         PrintWriter printWriter = new PrintWriter(fileWriter);
         printWriter.println(packetType + " IP address " + serverAddress.toString() + " " + packet.getLength() +" bytes received with UDP");
         printWriter.close();
+    }
+
+    protected int sendUdpPacket(byte[] message, InetAddress serverAddress, int portNumber, int timeout) {
+
+        DatagramSocket udpSocket = null;
+        int bytesRead = 0;
+        int control = 0;
+        try {
+            udpSocket = new DatagramSocket();
+            DatagramPacket ntpReqPacket = new DatagramPacket(message, message.length, serverAddress, portNumber);
+            udpSocket.send(ntpReqPacket);
+            byte[] buf = new byte[4096];
+            DatagramPacket packet = new DatagramPacket(buf, buf.length);
+            udpSocket.setSoTimeout(timeout);
+            while (true) {
+                udpSocket.receive(packet);
+                bytesRead += packet.getLength();
+                control++;
+            }
+        }
+        catch (SocketException e) {
+            if(control == 0)
+                bytesRead = -1;
+        }
+        catch (IOException ignored) { }
+        finally {
+            if (udpSocket != null) {
+                try {
+                    udpSocket.close();
+                } catch (NullPointerException ignored) { }
+            }
+        }
+        return bytesRead;
     }
 }
