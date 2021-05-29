@@ -153,10 +153,13 @@ public class MemCachedScanner extends IPv4Addresses implements Runnable {
             out.flush();
             reader = new BufferedReader(new InputStreamReader(tcpSocket.getInputStream()));
             String buffer = null;
-            String received = null;
+            String received = "";
+            int i=0;
             //reading message by lines while line is not empty
             while ((buffer = reader.readLine()) != null){
                 received += buffer;
+                System.out.println(buffer);
+                if(buffer.equals("END")) break;
             }
             //System.out.println(received);
             int responseSize = received.getBytes().length;
@@ -218,6 +221,6 @@ public class MemCachedScanner extends IPv4Addresses implements Runnable {
     @Override
     public void query(InetAddress serverAddress) {
         queryUDP(serverAddress);
-        queryTCP(serverAddress);
+        //queryTCP(serverAddress);
     }
 }
