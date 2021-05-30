@@ -132,13 +132,13 @@ public class Main {
            return;
        }
          */
-        /*
+/*
         ExecutorService serviceDNS = Executors.newFixedThreadPool(coreCount);
         for(int i = 0 ; i < 224; i++){
             serviceDNS.execute(new DNSScanner(i,i+1));
         }
         serviceDNS.shutdown();
-
+*/
 
         ExecutorService serviceSNMP = Executors.newFixedThreadPool(1);
         for(int i = 0 ; i < 1; i++){
@@ -146,21 +146,25 @@ public class Main {
         }
         serviceSNMP.shutdown();
 
-        */
-        /*
+
+/*
         ExecutorService serviceNTP = Executors.newFixedThreadPool(coreCount);
         for(int i = 0 ; i < 224; i++){
             serviceNTP.execute(new NTPScanner(i,i+1));
         }
         serviceNTP.shutdown();
-        */
 
-
+*/
+/*
         ExecutorService serviceMemCached = Executors.newFixedThreadPool(coreCount);
         for(int i = 0 ; i < 224; i++){
             serviceMemCached.execute(new MemCachedScanner(i,i+1));
         }
         serviceMemCached.shutdown();
+
+
+ */
+
 
 
         for(int i = 0; i < args.length; i++) {

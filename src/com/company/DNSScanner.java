@@ -21,8 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class DNSScanner extends IPv4Addresses implements Runnable {
 
     private static final int DNS_SERVER_PORT = 53;
-    byte[] dnsFrame;
-
+    private static boolean isYourFirstTime = true;
     /**
      * Constructor<br/>
      * It removes file DNS_Vulnerable.txt if exists to avoid appending new output to the old one<br/>
@@ -32,31 +31,15 @@ public class DNSScanner extends IPv4Addresses implements Runnable {
      * @throws IOException
      */
     public DNSScanner(int begin, int end) throws IOException {
+        amplification = 1;
         packetType = "DNS";
         fileName = "DNS_Vulnerable.txt";
-        File file = new File(fileName);
-        if(file.exists()){
-           file.delete();
-        }
         this.BEGIN = begin;
         this.END = end;
         buildPacket();
-        if(toFile) {
-            FileWriter fileWriter = new FileWriter(fileName, true); //Set true for append mode
-            PrintWriter printWriter = new PrintWriter(fileWriter);
-            printWriter.println(dnsFrame.length + " bytes sent\n");
-            printWriter.close();
+        if(isYourFirstTime){
+            isYourFirstTime = fileManager(isYourFirstTime, messageUdp.length);
         }
-    }
-
-    /**
-     * UNUSED<br/>
-     * Scans IPv4 addresses pool limited by BEGIN, END variables<br/>
-     * Used when DNSScanner class was not executed by a thread<br/>
-     * @throws IOException
-     */
-    public void doStuff() throws IOException {
-        scan();
     }
 
     /**
@@ -215,7 +198,7 @@ public class DNSScanner extends IPv4Addresses implements Runnable {
 
         //Class 0x0001 = IN
         dos.writeShort(0x0001);
-        dnsFrame = baos.toByteArray();
+        messageUdp = baos.toByteArray();
     }
     
     /**
@@ -228,45 +211,6 @@ public class DNSScanner extends IPv4Addresses implements Runnable {
      */
     @Override
     public void query(InetAddress serverAddress) throws IOException {
-
-        /* sending DNS packet */
-        DatagramSocket socket = null;
-        try{
-            socket = new DatagramSocket();
-
-            DatagramPacket dnsReqPacket = new DatagramPacket(dnsFrame, dnsFrame.length, serverAddress, DNS_SERVER_PORT);
-            socket.send(dnsReqPacket);
-
-            byte[] buf = new byte[2048];
-            DatagramPacket packet = new DatagramPacket(buf, buf.length);
-
-            //Waiting for a response limited by 40 ms
-            socket.setSoTimeout(40);
-            socket.receive(packet);
-            socket.close();
-            try {
-                if (packet.getLength() >= dnsFrame.length * 1) {
-                    if (toFile) {
-                        writeToFile(serverAddress, packet);
-                    }
-                    System.out.println("DNS IP address " + serverAddress.toString() + "\t" + dnsReqPacket.getLength() + " bytes sent " + packet.getLength() + " bytes received");
-                }
-            } catch(NullPointerException e){}
-        }
-        catch(SocketTimeoutException e) {
-            //System.out.println("TimeoutException");
-        }
-        catch(SocketException e) {
-            //System.out.println("SocketException");
-        }
-        finally {
-            if (socket != null) {
-                try {
-                    socket.close();
-                } catch (NullPointerException ex1) {
-                    socket = null;
-                }
-            }
-        }
+        vulnerability(sendUdpPacket(serverAddress, DNS_SERVER_PORT, 40), messageUdp.length, serverAddress.toString(), "UDP");
     }
 }

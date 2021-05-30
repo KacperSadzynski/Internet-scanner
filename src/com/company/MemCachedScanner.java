@@ -22,9 +22,8 @@ import java.util.zip.GZIPInputStream;
  */
 public class MemCachedScanner extends IPv4Addresses implements Runnable {
 
-    public static final int MEMCACHED_SERVER_PORT = 11211;
-    private byte[] memCachedFrame;
-
+    private static final int MEMCACHED_SERVER_PORT = 11211;
+    private static boolean isYourFirstTime = true;
     /**
      * Constructor<br/>
      * It removes file MemCached_Vulnerable.txt if exists to avoid appending new output to the old one<br/>
@@ -35,20 +34,16 @@ public class MemCachedScanner extends IPv4Addresses implements Runnable {
      * @throws IOException
      */
     public MemCachedScanner(int begin, int end) throws IOException {
+        amplification = 1;
         packetType = "MemCached";
         fileName = "MemCached_Vulnerable.txt";
-        File file = new File(fileName);
-        if (file.exists()) {
-            file.delete();
-        }
+        messageTCP = "stats\r\n";
+        messageTCPSize = messageTCP.getBytes().length;
         this.BEGIN = begin;
         this.END = end;
         buildPacket();
-        if (toFile) {
-            FileWriter fileWriter = new FileWriter(fileName, true); //Set true for append mode
-            PrintWriter printWriter = new PrintWriter(fileWriter);
-            printWriter.println(memCachedFrame.length + " bytes sent\n");
-            printWriter.close();
+        if(isYourFirstTime){
+            isYourFirstTime = fileManager(isYourFirstTime, messageUdp.length);
         }
     }
 
@@ -81,7 +76,7 @@ public class MemCachedScanner extends IPv4Addresses implements Runnable {
         dos.writeShort(0x0a00);
 
         //Extras, Key, Values - None
-        memCachedFrame = baos.toByteArray();
+        messageUdp = baos.toByteArray();
     }
 
     @Override
@@ -96,71 +91,16 @@ public class MemCachedScanner extends IPv4Addresses implements Runnable {
     }
 
     private void queryUDP(InetAddress serverAddress){
-        DatagramSocket udpSocket = null;
-        try {
-            udpSocket = new DatagramSocket();
-
-            DatagramPacket memCachedReqPacket = new DatagramPacket(memCachedFrame, memCachedFrame.length, serverAddress, MEMCACHED_SERVER_PORT);
-            udpSocket.send(memCachedReqPacket);
-
-            byte[] buf = new byte[4096];
-            DatagramPacket packet = new DatagramPacket(buf, buf.length);
-
-            //Waiting for a response limited by 40 ms
-
-            int bytesRead = 0;
-            try {
-                udpSocket.setSoTimeout(40);
-                while (true) {
-                    udpSocket.receive(packet);
-                    bytesRead += packet.getLength();
-                }
-            }catch(SocketException e){}
-            catch(SocketTimeoutException e){}
-            //udpSocket.receive(packet);
-            //System.out.println(packet.getLength());
-            //udpSocket.receive(packet);
-            //System.out.println(packet.getLength());
-            try {
-                if (bytesRead >= memCachedFrame.length * 1) {
-                    if (toFile) {
-                        writeToFile(serverAddress, packet);
-                    }
-                        System.out.println("MemCached IP address " + serverAddress.toString() + "\t" + memCachedReqPacket.getLength() + " bytes sent " + bytesRead + " bytes received");
-                    }
-            }catch(NullPointerException e){}
-        } catch (SocketTimeoutException e) {
-            //System.out.println("IP address " + serverAddress.toString() + " SocketTimeoutException " + e.getMessage());
-            //System.err.println(e.getMessage());
-        } catch (UnknownHostException e) {
-            //System.out.println("IP address " + serverAddress.toString() + " UnknownHostException " + e.getMessage());
-            //System.err.println(e.getMessage());
-        } catch (IOException e) {
-            //System.out.println("IP address " + serverAddress.toString() + " IOException " + e.getMessage());
-            //System.err.println();
-        } catch (Exception e) {
-            //System.out.println("IP address " + serverAddress.toString() + " Inny wyjatek " + e.getMessage());
-            //System.err.println(e.getMessage());
-        } finally {
-            if (udpSocket != null) {
-                try {
-                    udpSocket.close();
-                } catch (NullPointerException ex1) {
-                    //ignore
-                }
-            }
-        }
+        vulnerability(sendUdpPacket(serverAddress,MEMCACHED_SERVER_PORT, 40), messageUdp.length, serverAddress.toString(), "UDP");
     }
     private void queryTCP(InetAddress serverAddress){
         Socket tcpSocket = null;
         BufferedReader reader = null;
         try{
-            String message = "stats\r\n";
-            int querySize = message.getBytes().length;
             tcpSocket = new Socket(serverAddress, MEMCACHED_SERVER_PORT);
             Writer out = new OutputStreamWriter(tcpSocket.getOutputStream(), "ASCII");
             BufferedReader in = new BufferedReader(new InputStreamReader(tcpSocket.getInputStream(), "ASCII"));
-            out.write(message);
+            out.write(messageTCP);
             out.flush();
             reader = new BufferedReader(new InputStreamReader(tcpSocket.getInputStream()));
             String buffer = null;
@@ -177,14 +117,8 @@ public class MemCachedScanner extends IPv4Addresses implements Runnable {
             //System.out.println(responseSize);
             reader.close();
             tcpSocket.close();
-            try {
-                if (responseSize >= querySize * 1) {
-                    if (toFile) {
-                        writeToFile(serverAddress, responseSize);
-                    }
-                        System.out.println("MemCached IP address " + serverAddress.toString() + "\t" + querySize + " bytes sent " + responseSize + " bytes received");
-                }
-            } catch(NullPointerException e){}
+            
+            vulnerability(responseSize, messageTCPSize, serverAddress.toString(), "TCP");
         }catch (BindException e) {
             //System.out.println("IP address " + serverAddress.toString() + " BindException " + e.getMessage());
             //System.err.println(e.getMessage());
@@ -233,12 +167,5 @@ public class MemCachedScanner extends IPv4Addresses implements Runnable {
     public void query(InetAddress serverAddress) {
         queryUDP(serverAddress);
         queryTCP(serverAddress);
-    }
-
-    private void writeToFile(InetAddress serverAddress, int size) throws IOException {
-        FileWriter fileWriter = new FileWriter(fileName, true); //Set true for append mode
-        PrintWriter printWriter = new PrintWriter(fileWriter);
-        printWriter.println(packetType + " IP address " + serverAddress.toString() + " " + size +" bytes received with TCP");
-        printWriter.close();
     }
 }

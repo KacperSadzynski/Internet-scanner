@@ -1,5 +1,5 @@
 package com.company;
-
+/* 193.110.137.132 test*/
 import java.io.*;
 import java.net.*;
 /**
@@ -16,9 +16,8 @@ import java.net.*;
  */
 public class NTPScanner extends IPv4Addresses implements Runnable{
 
-    public static final int NTP_SERVER_PORT = 123;
-    private byte[] ntpFrame;
-    
+    private static final int NTP_SERVER_PORT = 123;
+    private static boolean isYourFirstTime = true;
     /**
      * Constructor<br/>
      * It removes file NTP_Vulnerable.txt if exists to avoid appending new output to the old one<br/>
@@ -28,20 +27,14 @@ public class NTPScanner extends IPv4Addresses implements Runnable{
      * @throws IOException
      */
     public NTPScanner(int begin, int end) throws IOException {
+        amplification = 1;
         packetType = "NTP";
         fileName = "NTP_Vulnerable.txt";
-        File file = new File(fileName);
-        if(file.exists()){
-            file.delete();
-        }
         this.BEGIN = begin;
         this.END = end;
         buildPacket();
-        if(toFile) {
-            FileWriter fileWriter = new FileWriter(fileName, true); //Set true for append mode
-            PrintWriter printWriter = new PrintWriter(fileWriter);
-            printWriter.println(ntpFrame.length + " bytes sent\n");
-            printWriter.close();
+        if(isYourFirstTime){
+            isYourFirstTime = fileManager(isYourFirstTime, messageUdp.length);
         }
     }
     
@@ -73,8 +66,8 @@ public class NTPScanner extends IPv4Addresses implements Runnable{
         dos.writeShort(0x0000);
         dos.writeShort(0x0000);
         dos.writeShort(0x0000);
-        
-        ntpFrame = baos.toByteArray();
+
+        messageUdp = baos.toByteArray();
     }
     /**
      * Scans IPv4 addresses pool limited by BEGIN, END variables<br/>
@@ -100,43 +93,6 @@ public class NTPScanner extends IPv4Addresses implements Runnable{
      */
     @Override
     public void query(InetAddress serverAddress) throws IOException {
-    DatagramSocket socket = null;
-        try{
-            socket = new DatagramSocket();
-
-            DatagramPacket ntpReqPacket = new DatagramPacket(ntpFrame, ntpFrame.length, serverAddress, NTP_SERVER_PORT);
-            socket.send(ntpReqPacket);
-
-            byte[] buf = new byte[2048];
-            DatagramPacket packet = new DatagramPacket(buf, buf.length);
-
-            //Waiting for a response limited by 40 ms
-            socket.setSoTimeout(40);
-            socket.receive(packet);
-            socket.close();
-            try {
-                if (packet.getLength() >= ntpFrame.length * 1) {
-                    if (toFile) {
-                        writeToFile(serverAddress, packet);
-                    }
-                    System.out.println("NTP IP address " + serverAddress.toString() + "\t" + ntpReqPacket.getLength() + " bytes sent " + packet.getLength() + " bytes received");
-                }
-            } catch(NullPointerException e){}
-        }
-        catch(SocketTimeoutException e) {
-            //System.out.println("TimeoutException");
-        }
-        catch(SocketException e) {
-            //System.out.println("SocketException");
-        }
-        finally {
-            if (socket != null) {
-                try {
-                    socket.close();
-                } catch (NullPointerException ex1) {
-                    socket = null;
-                }
-            }
-        }
+        vulnerability(sendUdpPacket(serverAddress, NTP_SERVER_PORT, 40), messageUdp.length, serverAddress.toString(), "UDP");
     }
 }

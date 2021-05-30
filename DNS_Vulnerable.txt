@@ -1,2 +1,6 @@
-DNS IP address /1.0.0.2 26 bytes received
-DNS IP address /1.0.0.3 26 bytes received
+26 bytes sent
+
+IP address /1.0.0.1  	26 bytes received with UDP
+IP address /1.0.0.2  	26 bytes received with UDP
+IP address /1.0.0.3  	26 bytes received with UDP
+IP address /1.0.0.19  	26 bytes received with UDP

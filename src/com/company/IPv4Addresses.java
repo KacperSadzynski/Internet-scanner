@@ -1,9 +1,6 @@
 package com.company;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InterruptedIOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.*;
 
 /**
@@ -20,12 +17,15 @@ public class IPv4Addresses {
 
     protected static boolean toFile;
     static{
-    toFile = false;
+        toFile = false;
     }
     protected int BEGIN;
     protected int END;
     protected String packetType, fileName;
-
+    protected byte[] messageUdp;
+    protected int amplification;
+    protected String messageTCP;
+    protected int messageTCPSize;
     /**
      * Generates IPv4 addresses limited by BEGIN, END variables<br/>
      * For each generated address, query() method is being used<br/>
@@ -34,11 +34,11 @@ public class IPv4Addresses {
     protected void scan() throws IOException {
         Integer[] rawIPList = new Integer[] {0, 0, 0, 0};
         try {
-            for (int i = BEGIN; i < END; i++) {
+            for (int i = 192; i < 193; i++) {
                 rawIPList[0] = i;
                 if (i == 0 || i == 10 || i == 127)
                     continue;
-                for (int j = 0; j < 256; j++) {
+                for (int j = 168; j < 256; j++) {
                     rawIPList[1] = j;
                     //System.out.println(i + "." + j + ".0.0 reached");
                     for (int k = 0; k < 256; k++) {
@@ -49,8 +49,8 @@ public class IPv4Addresses {
                             String address = rawIPList[0].toString() + "." + rawIPList[1].toString() + "." + rawIPList[2].toString() + "." + rawIPList[3].toString();
                             if (address.equals("255.255.255.255"))
                                 continue;
-                            address = "127.0.0.1";
-                            //System.out.println(address);
+                            //address = "127.0.0.1";
+                            System.out.println(address);
                             InetAddress current = InetAddress.getByName(address);
                             query(current);
                         }
@@ -89,33 +89,42 @@ public class IPv4Addresses {
      * The method that creates the file and appends found results<br/>
      * It is synchronized to avoid sharing the same resources among threats<br/>
      * @param serverAddress used to represent IP address in a string, using toString method
-     * @param packet used to write a number of received bytes, using getLength method
+     * @param bytesRead used to write a number of received bytes
      * @throws IOException
      */
-    protected synchronized void writeToFile(InetAddress serverAddress, DatagramPacket packet) throws IOException {
-        FileWriter fileWriter = new FileWriter(fileName, true); //Set true for append mode
-        PrintWriter printWriter = new PrintWriter(fileWriter);
-        printWriter.println(packetType + " IP address " + serverAddress.toString() + " " + packet.getLength() +" bytes received with UDP");
-        printWriter.close();
+    protected synchronized void writeToFile(String serverAddress, int bytesRead, String protocol) {
+        PrintWriter printWriter = null;
+        try {
+            FileWriter fileWriter = new FileWriter(fileName, true); //Set true for append mode
+            printWriter = new PrintWriter(fileWriter);
+            printWriter.println("IP address " + serverAddress + "  \t" + bytesRead + " bytes received with " + protocol);
+        }
+        catch(IOException ignore){ }
+        finally {
+            if(printWriter != null)
+                printWriter.close();
+        }
     }
 
-    protected int sendUdpPacket(byte[] message, InetAddress serverAddress, int portNumber, int timeout) {
+    protected int sendUdpPacket(InetAddress serverAddress, int portNumber, int timeout) {
 
         DatagramSocket udpSocket = null;
         int bytesRead = 0;
         int control = 0;
         try {
             udpSocket = new DatagramSocket();
-            DatagramPacket ntpReqPacket = new DatagramPacket(message, message.length, serverAddress, portNumber);
-            udpSocket.send(ntpReqPacket);
+            DatagramPacket ReqPacket = new DatagramPacket(messageUdp, messageUdp.length, serverAddress, portNumber);
+            udpSocket.send(ReqPacket);
             byte[] buf = new byte[4096];
             DatagramPacket packet = new DatagramPacket(buf, buf.length);
             udpSocket.setSoTimeout(timeout);
-            while (true) {
+            boolean isMC = false;
+            if (packetType.equals("MemCached")) isMC = true;
+            do{
                 udpSocket.receive(packet);
                 bytesRead += packet.getLength();
                 control++;
-            }
+            } while (isMC);
         }
         catch (SocketException e) {
             if(control == 0)
@@ -130,5 +139,42 @@ public class IPv4Addresses {
             }
         }
         return bytesRead;
+    }
+    protected void vulnerability(int bytesRead, int messageLength, String serverAddress, String protocol){
+        if (bytesRead >= messageLength * amplification) {
+            if (toFile) {
+                writeToFile(serverAddress, bytesRead, protocol);
+            }
+            System.out.println(packetType + " IP address " + serverAddress + "  \t" + messageLength + " bytes sent " + bytesRead + " bytes received with " + protocol);
+        }
+    }
+    protected synchronized boolean fileManager(boolean isYourFirstTime, int sizeUdp){
+        PrintWriter printWriter = null;
+        try{
+            if(isYourFirstTime){
+                File file = new File(fileName);
+                if(file.exists()){
+                    file.delete();
+                }
+                if(toFile) {
+                    FileWriter fileWriter = new FileWriter(fileName, true); //Set true for append mode
+                    printWriter = new PrintWriter(fileWriter);
+                    if(packetType.equals("MemCached")){
+                        printWriter.println(sizeUdp + " bytes sent with UDP\n");
+                        printWriter.println(messageTCPSize + " bytes sent with TCP\n");
+                    }
+                    else {
+                        printWriter.println(sizeUdp + " bytes sent\n");
+                    }
+                }
+                isYourFirstTime = false;
+            }
+        }
+        catch(IOException ignored){ }
+        finally {
+            if(printWriter != null)
+                printWriter.close();
+        }
+        return isYourFirstTime;
     }
 }
