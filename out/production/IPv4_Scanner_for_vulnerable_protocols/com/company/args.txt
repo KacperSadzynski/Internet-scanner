@@ -1,0 +1,12 @@
+--help
+-h
+--DNS
+-d
+--SNMP
+-s
+--NTP
+-n
+--MemCached
+-mc
+--write
+-w

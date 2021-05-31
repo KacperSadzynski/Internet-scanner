@@ -42,7 +42,7 @@ public class IPv4Addresses {
                     rawIPList[1] = j;
                     //System.out.println(i + "." + j + ".0.0 reached");
                     for (int k = 0; k < 256; k++) {
-                        System.out.println(i + "." + j + "." + k + ".0 reached");
+                        //System.out.println(i + "." + j + "." + k + ".0 reached");
                         rawIPList[2] = k;
                         for (int l = 0; l < 256; l++) {
                             rawIPList[3] = l;
@@ -50,7 +50,7 @@ public class IPv4Addresses {
                             if (address.equals("255.255.255.255"))
                                 continue;
                             //address = "127.0.0.1";
-                            System.out.println(address);
+                            //System.out.println(address);
                             InetAddress current = InetAddress.getByName(address);
                             query(current);
                         }
