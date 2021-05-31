@@ -30,7 +30,7 @@ public class Main {
      * @throws FileNotFoundException
      */
     private static void setArgList() throws FileNotFoundException {
-        String fileName = System.getProperty("user.dir") + "\\src\\com\\company\\" + "args.txt";
+        String fileName = System.getProperty("user.dir") + "/src/com/company/" + "args.txt";
         File file = new File(fileName);
         Scanner in = new Scanner(file);
         help = new ArgAvailable(in.nextLine(),in.nextLine());
@@ -175,7 +175,7 @@ public class Main {
             switch (args[i]){
                 case "-h": {
                     /*
-                    String fileName = System.getProperty("user.dir") + "\\src\\com\\company\\" + "help.txt";
+                    String fileName = System.getProperty("user.dir") + "/src/com/company/" + "help.txt";
                     File file = new File(fileName);
                     Scanner in = new Scanner(file);
                     while(in.hasNext()){
