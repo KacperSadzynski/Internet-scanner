@@ -34,11 +34,11 @@ public class IPv4Addresses {
     protected void scan() throws IOException {
         Integer[] rawIPList = new Integer[] {0, 0, 0, 0};
         try {
-            for (int i = 192; i < 193; i++) {
+            for (int i = BEGIN; i < END; i++) {
                 rawIPList[0] = i;
                 if (i == 0 || i == 10 || i == 127)
                     continue;
-                for (int j = 168; j < 256; j++) {
+                for (int j = 0; j < 256; j++) {
                     rawIPList[1] = j;
                     //System.out.println(i + "." + j + ".0.0 reached");
                     for (int k = 0; k < 256; k++) {

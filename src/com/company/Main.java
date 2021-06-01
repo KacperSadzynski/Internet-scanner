@@ -122,11 +122,8 @@ public class Main {
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
-       IPv4Addresses setFlag = new IPv4Addresses(true);
        setArgList();
        int coreCount = Runtime.getRuntime().availableProcessors();
-       System.out.println(coreCount);
-        /*
        try {
             if(!verificationArgs(args)){
                 throw new Exception();
@@ -135,74 +132,58 @@ public class Main {
            System.out.println("Wrong argument list. Type --help or -h to check command list");
            return;
        }
-         */
-/*
-        ExecutorService serviceDNS = Executors.newFixedThreadPool(coreCount);
-        for(int i = 0 ; i < 224; i++){
-            serviceDNS.execute(new DNSScanner(i,i+1));
+       boolean writingToFile = false;
+        for (int i = 0; i < args.length; i++ ){
+            if (args[i].equals("-w")) {
+                writingToFile = true;
+            }
         }
-        serviceDNS.shutdown();
-*/
-
-        ExecutorService serviceSNMP = Executors.newFixedThreadPool(1);
-        for(int i = 0 ; i < 1; i++){
-            serviceSNMP.execute(new SNMPScanner(192,193));
-        }
-        serviceSNMP.shutdown();
-
-
-/*
-        ExecutorService serviceNTP = Executors.newFixedThreadPool(coreCount);
-        for(int i = 0 ; i < 224; i++){
-            serviceNTP.execute(new NTPScanner(i,i+1));
-        }
-        serviceNTP.shutdown();
-
-*/
-/*
-        ExecutorService serviceMemCached = Executors.newFixedThreadPool(coreCount);
-        for(int i = 0 ; i < 224; i++){
-            serviceMemCached.execute(new MemCachedScanner(i,i+1));
-        }
-        serviceMemCached.shutdown();
-
-
- */
-
-
-
-        for(int i = 0; i < args.length; i++) {
-            switch (args[i]){
+        IPv4Addresses FileWriting = new IPv4Addresses(writingToFile);
+        for(int j = 0; j < args.length; j++) {
+            switch (args[j]){
                 case "-h": {
-                    /*
                     String fileName = System.getProperty("user.dir") + "/src/com/company/" + "help.txt";
                     File file = new File(fileName);
                     Scanner in = new Scanner(file);
                     while(in.hasNext()){
                         System.out.println(in.nextLine());
                     }
-
-                     */
                     break;
                 }
                 case "-d": {
                     System.out.println("Running DNS Scanner");
-                    //DNSScanner scanner = new DNSScanner();
-                    //scanner.scan();
+                    ExecutorService serviceDNS = Executors.newFixedThreadPool(coreCount);
+                    for(int i = 0 ; i < 224; i++){
+                        serviceDNS.execute(new DNSScanner(i,i+1));
+                    }
+                    serviceDNS.shutdown();
                     break;
                 }
                 case "-s": {
                     System.out.println("Running SNMP Scanner");
-                    //SNMPScanner scanner = new SNMPScanner();
-                    //scanner.scan();
+                    ExecutorService serviceSNMP = Executors.newFixedThreadPool(1);
+                    for(int i = 0 ; i < 1; i++){
+                         serviceSNMP.execute(new SNMPScanner(192,193));
+                    }
+                    serviceSNMP.shutdown();
                     break;
                 }
                 case "-n": {
                     System.out.println("Running NTP Scanner");
+                    ExecutorService serviceNTP = Executors.newFixedThreadPool(coreCount);
+                    for(int i = 0 ; i < 224; i++){
+                        serviceNTP.execute(new NTPScanner(i,i+1));
+                    }
+                    serviceNTP.shutdown();
                     break;
                 }
                 case "-mc": {
                     System.out.println("Running MemCached Scanner Scanner");
+                    ExecutorService serviceMemCached = Executors.newFixedThreadPool(coreCount);
+                    for(int i = 0 ; i < 224; i++){
+                        serviceMemCached.execute(new MemCachedScanner(i,i+1));
+                    }
+                    serviceMemCached.shutdown();
                     break;
                 }
                 case "-w": {

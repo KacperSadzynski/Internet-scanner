@@ -1,4 +1,0 @@
-16 bytes sent with UDP
-
-7 bytes sent with TCP
-
