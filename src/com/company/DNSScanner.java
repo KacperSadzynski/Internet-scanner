@@ -8,27 +8,31 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * DNSScanner class inherits from the IPv4Addresses class and Runnable interface<br/>
- * By default, this class is being executed by a thread but for test purposes method testScan can be used as well<br/>
+ * By default, this class is being executed by a thread<br/>
  * It builds a DNS packet that is sent by query(), then a thread execute run() method<br/>
  * It scans all public IPv4 addresses limited by BEGIN, END variables<br/>
- * If the amplification of the sent packet is big enough it print out the IP of this server<br/>
+ * If the amplification of the sent packet is big enough it prints out the IP of this server<br/>
  * If the toFile flag is TRUE it writes to DNS_Vulnerable.txt file output as well<br/>
  * Instance Variables:<br/>
  * static final int DNS_SERVER_PORT - represents DNS server port, set on 53<br/>
- * byte[] dnsFrame - byte array that represents DNS packet<br/>
+ * static boolean isYourFristTime - the flag that checks if a given object of a class is its first created object<br/>
  * @see IPv4Addresses
  */
 public class DNSScanner extends IPv4Addresses implements Runnable {
 
     private static final int DNS_SERVER_PORT = 53;
     private static boolean isYourFirstTime = true;
+
     /**
      * Constructor<br/>
-     * It removes file DNS_Vulnerable.txt if exists to avoid appending new output to the old one<br/>
-     * Builds dnsFrame byte array using the buildPacket() method<br/>
+     * It removes file DNS_Vulnerable.txt if exists to avoid appending new output to the old one using fileManager method<br/>
+     * Builds messageUdp byte array using the buildPacket() method<br/>
+     * Sets parameters: amplification, packetType, fileName corresponding to the DNSScanner<br/>
      * @param begin used to set BEGIN variable
      * @param end used to set END variable
      * @throws IOException
+     * @see #fileManager(boolean, int)
+     * @see IPv4Addresses
      */
     public DNSScanner(int begin, int end) throws IOException {
         amplification = 1;
@@ -45,6 +49,7 @@ public class DNSScanner extends IPv4Addresses implements Runnable {
     /**
      * Scans IPv4 addresses pool limited by BEGIN, END variables<br/>
      * This method is being executed by a thread only<br/>
+     * @see #scan()
      */
     @Override
     public void run() {
@@ -57,102 +62,10 @@ public class DNSScanner extends IPv4Addresses implements Runnable {
     }
 
     /**
-     * UNUSED<br/>
-     * Method wrote to find the best amplification with a variety of different types of queries on different sites<br/>
-     * All queries were being tested on 8.8.8.8 IP address<br/>
-     * @param domain represents a domain
-     * @param type represents a type of query
-     * @param address represents IP address on which method sends a query
-     * @return int This returns 0 if an error is being occurred or number of bytes received form DNS server on specific query
-     * @throws IOException
-     */
-    protected int testScan(String domain, String type, String address) throws  IOException{
-
-        InetAddress current = InetAddress.getByName(address);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        DataOutputStream dos = new DataOutputStream(baos);
-        int it = Integer.parseInt(type, 16);
-
-        /* Building DNS packet */
-        //Identifier
-        dos.writeShort(0x1234);
-
-        //Query parameters
-        dos.writeShort(0x0000);
-
-        //Number of questions
-        dos.writeShort(0x0001);
-
-        //Number of answers
-        dos.writeShort(0x0000);
-
-        //Number of authority records
-        dos.writeShort(0x0000);
-
-        //Number of additional records
-        dos.writeShort(0x0000);
-
-        //splitting domain into parts
-        String[] domainParts = domain.split("\\.");
-
-        //coding domain name in UTF-8 (HEX)
-        for (int i = 0; i<domainParts.length; i++) {
-            byte[] domainBytes = domainParts[i].getBytes("UTF-8");
-            dos.writeByte(domainBytes.length);
-            dos.write(domainBytes);
-        }
-
-        //The end of domain's name
-        dos.writeByte(0x00);
-
-        //Type of the query - the biggest response found for 000F type
-        dos.writeShort(it);
-
-        //Class 0x0001 = IN
-        dos.writeShort(0x0001);
-
-        byte[] dnsFrame = baos.toByteArray();
-
-        //System.out.println("Sending: " + dnsFrame.length + " bytes to " + domain + " domain with typeID " + type);
-
-        /* sending DNS packet */
-        DatagramSocket socket = null;
-        DatagramPacket dnsReqPacket = null;
-        DatagramPacket packet = null;
-        try{
-            socket = new DatagramSocket();
-            dnsReqPacket = new DatagramPacket(dnsFrame, dnsFrame.length, current, DNS_SERVER_PORT);
-            socket.send(dnsReqPacket);
-            byte[] buf = new byte[2048];
-            packet = new DatagramPacket(buf, buf.length);
-            //Waiting for a response limited by 20 ms
-            socket.setSoTimeout(20);
-            socket.receive(packet);
-            socket.close();
-            FileWriter fileWriter = new FileWriter("DNS_test.txt", true); //Set true for append mode
-            PrintWriter printWriter = new PrintWriter(fileWriter);
-            printWriter.println("Sending: " + dnsFrame.length + " bytes to " + domain + " domain with typeID " + type + " DNS IP address " + current.toString() + " " + packet.getLength() +" bytes received");
-            printWriter.close();
-            //System.out.println(packet.getLength() +" bytes received");
-            return packet.getLength();
-        }
-        catch(Exception e){}
-        finally {
-             if (socket != null) {
-                try {
-                    socket.close();
-                } catch (NullPointerException ex1) {
-                    socket = null;
-                }
-             }
-        }
-        return 0;
-    }
-
-    /**
      * Builds a DNS packet<br/>
-     * build packet is being saved to dnsFrame, which is a byte array<br/>
+     * builded packet is being saved to messageUdp byte array<br/>
      * @throws IOException
+     * @see IPv4Addresses
      */
     protected void buildPacket() throws IOException {
 
@@ -208,6 +121,9 @@ public class DNSScanner extends IPv4Addresses implements Runnable {
      * When conditions were met, method prints out the message and write to File if toFile flag equals TRUE<br/>
      * @param serverAddress represents an IP address on which method sends a query
      * @throws IOException
+     * @see #vulnerability(int, int, String, String)
+     * @see #sendUdpPacket(InetAddress, int, int)
+     * @see IPv4Addresses
      */
     @Override
     public void query(InetAddress serverAddress) throws IOException {

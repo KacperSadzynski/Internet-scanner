@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -77,43 +78,6 @@ public class Main {
         }
         return true;
     }
-   /**
-    * UNUSED<br/>
-    * For test purposes
-    * @throws IOException
-    */
-    public static void searchingDNSAmplification() throws IOException{
-            List<String> domains = new ArrayList<>();
-            List<String> typeID = new ArrayList<>();
-            File file3 = new File("DNS_Vulnerable.txt");
-            if(file3.exists()){
-                file3.delete();
-            }
-            File file = new File("domains.txt");
-            Scanner in = new Scanner(file);
-            while(in.hasNext()){
-                domains.add(in.nextLine());
-            }
-            in.close();
-            File file2 = new File("typeID.txt");
-            Scanner in2 = new Scanner(file2);
-            while(in2.hasNext()) {
-                typeID.add(in2.nextLine());
-            }
-            int max = 0;
-            for(String a : domains){
-                for(String b : typeID){
-                    int pom = 0;
-                    DNSScanner scanner = new DNSScanner(0,256);
-                    pom = scanner.testScan(a, b,"8.8.8.8");
-                    if(pom>max){
-                        max = pom;
-                    }
-                }
-            }
-            in2.close();
-            System.out.println("Max length found: " + max);
-    }
 
     /**
      * Verify args written by a user<br/>
@@ -161,9 +125,9 @@ public class Main {
                 }
                 case "-s": {
                     System.out.println("Running SNMP Scanner");
-                    ExecutorService serviceSNMP = Executors.newFixedThreadPool(1);
-                    for(int i = 0 ; i < 1; i++){
-                         serviceSNMP.execute(new SNMPScanner(192,193));
+                    ExecutorService serviceSNMP = Executors.newFixedThreadPool(224);
+                    for(int i = 0 ; i < 224; i++){
+                         serviceSNMP.execute(new SNMPScanner(i,i+1));
                     }
                     serviceSNMP.shutdown();
                     break;

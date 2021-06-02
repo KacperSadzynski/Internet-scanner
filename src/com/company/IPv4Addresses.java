@@ -107,7 +107,6 @@ public class IPv4Addresses {
     }
 
     protected int sendUdpPacket(InetAddress serverAddress, int portNumber, int timeout) {
-
         DatagramSocket udpSocket = null;
         int bytesRead = 0;
         int control = 0;

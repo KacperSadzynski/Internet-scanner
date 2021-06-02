@@ -24,6 +24,7 @@ public class MemCachedScanner extends IPv4Addresses implements Runnable {
 
     private static final int MEMCACHED_SERVER_PORT = 11211;
     private static boolean isYourFirstTime = true;
+
     /**
      * Constructor<br/>
      * It removes file MemCached_Vulnerable.txt if exists to avoid appending new output to the old one<br/>

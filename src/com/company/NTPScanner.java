@@ -11,7 +11,7 @@ import java.net.*;
  * If the toFile flag is TRUE it writes to NTP_Vulnerable.txt file output as well<br/>
  * Instance Variables:<br/>
  * static final int NTP_SERVER_PORT - represents NTP server port, set on 123<br/>
- * byte[] ntpFrame - byte array that represents NTP packet<br/>
+ * static boolean isYourFristTime - the flag that checks if a given object of a class is its first created object<br/>
  * @see IPv4Addresses
  */
 public class NTPScanner extends IPv4Addresses implements Runnable{
@@ -21,10 +21,13 @@ public class NTPScanner extends IPv4Addresses implements Runnable{
     /**
      * Constructor<br/>
      * It removes file NTP_Vulnerable.txt if exists to avoid appending new output to the old one<br/>
-     * Builds ntpFrame byte array using the buildPacket() method<br/>
+     * Builds messageUdp byte array using the buildPacket() method<br/>
+     * Sets parameters: amplification, packetType, fileName corresponding to the NTPScanner<br/>
      * @param begin used to set BEGIN variable
      * @param end used to set END variable
      * @throws IOException
+     * @see #fileManager(boolean, int)
+     * @see IPv4Addresses
      */
     public NTPScanner(int begin, int end) throws IOException {
         amplification = 1;
@@ -40,8 +43,9 @@ public class NTPScanner extends IPv4Addresses implements Runnable{
     
     /**
      * Builds a NTP packet<br/>
-     * build packet is being saved to ntpFrame, which is a byte array<br/>
+     * builded packet is being saved to messageUdp byte array<br/>
      * @throws IOException
+     * @see IPv4Addresses
      */  
     protected void buildPacket() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -72,6 +76,7 @@ public class NTPScanner extends IPv4Addresses implements Runnable{
     /**
      * Scans IPv4 addresses pool limited by BEGIN, END variables<br/>
      * This method is being executed by a thread only<br/>
+     * @see #scan()
      */
     @Override
     public void run(){
@@ -90,6 +95,9 @@ public class NTPScanner extends IPv4Addresses implements Runnable{
      * When conditions were met, method prints out the message and write to File if toFile flag equals TRUE<br/>
      * @param serverAddress represents an IP address on which method sends a query
      * @throws IOException
+     * @see #vulnerability(int, int, String, String)
+     * @see #sendUdpPacket(InetAddress, int, int)
+     * @see IPv4Addresses
      */
     @Override
     public void query(InetAddress serverAddress) throws IOException {

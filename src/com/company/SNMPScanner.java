@@ -44,7 +44,7 @@ public class SNMPScanner extends IPv4Addresses implements Runnable{
         this.BEGIN=begin;
         this.END=end;
         pdu = new PDU();
-        pdu.add(new VariableBinding(new OID(new int[] {1,3,6,1,2,1,1,1})));
+        pdu.add(new VariableBinding(new OID(new int[] {1,3,6,1,2,1,1,1,0})));
         pduSize = pdu.getBERLength();
         if(isYourFirstTime){
             isYourFirstTime = fileManager(isYourFirstTime, pduSize);
@@ -74,8 +74,7 @@ public class SNMPScanner extends IPv4Addresses implements Runnable{
      * @throws IOException
      */
     @Override
-    public void query(InetAddress serverAddress) throws IOException {
-
+    public void query(InetAddress serverAddress) {
          Address address = GenericAddress.parse("udp:" + serverAddress + "/" + SNMP_SERVER_PORT);
          CommunityTarget target = new CommunityTarget();
          target.setCommunity(new OctetString("public"));
@@ -84,9 +83,11 @@ public class SNMPScanner extends IPv4Addresses implements Runnable{
          target.setTimeout(50);
          target.setRetries(0);
          Snmp snmp = null;
+         DefaultUdpTransportMapping transport = null;
          try {
-            DefaultUdpTransportMapping transport = new DefaultUdpTransportMapping();
+            transport = new DefaultUdpTransportMapping();
             snmp = new Snmp(transport);
+            snmp.removeNotificationListener(address);
             snmp.listen();
             pdu.setType(PDU.GET);
             ResponseEvent respEvent = snmp.send(pdu, target);
@@ -98,6 +99,7 @@ public class SNMPScanner extends IPv4Addresses implements Runnable{
         finally {
             if (snmp != null) {
                 try {
+                    snmp.removeTransportMapping(transport);
                     snmp.close();
                 } catch (IOException ignore) { }
             }
