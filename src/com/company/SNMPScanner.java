@@ -81,7 +81,7 @@ public class SNMPScanner extends IPv4Addresses implements Runnable{
          target.setAddress(address);
          target.setVersion(SnmpConstants.version2c);
          target.setTimeout(50);
-         target.setRetries(0);
+         target.setRetries(1);
          Snmp snmp = null;
          DefaultUdpTransportMapping transport = null;
          try {

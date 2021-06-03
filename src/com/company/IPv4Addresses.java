@@ -49,7 +49,7 @@ public class IPv4Addresses {
                             String address = rawIPList[0].toString() + "." + rawIPList[1].toString() + "." + rawIPList[2].toString() + "." + rawIPList[3].toString();
                             if (address.equals("255.255.255.255"))
                                 continue;
-                            //address = "127.0.0.1";
+                            //address = "80.0.16.67";
                             //System.out.println(address);
                             InetAddress current = InetAddress.getByName(address);
                             query(current);
@@ -70,7 +70,9 @@ public class IPv4Addresses {
      * @throws IOException
      */
     protected void query(InetAddress dest) throws IOException {}
-
+    public void demonstrationScan(InetAddress dest) throws IOException {
+        query(dest);
+    }
     /**
      * Default constructor
      */

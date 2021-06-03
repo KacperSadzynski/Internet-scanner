@@ -10,3 +10,5 @@
 -mc
 --write
 -w
+--demonstration
+-dm

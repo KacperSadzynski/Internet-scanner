@@ -4,17 +4,16 @@ package com.company;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.UnknownHostException;
+import java.io.Reader;
+import java.net.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.SQLOutput;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 /**
  * The Main class runs scanners typed by a user <br/>
@@ -125,7 +124,8 @@ public class Main {
                 }
                 case "-s": {
                     System.out.println("Running SNMP Scanner");
-                    ExecutorService serviceSNMP = Executors.newFixedThreadPool(224);
+                    coreCount=1;
+                    ExecutorService serviceSNMP = Executors.newFixedThreadPool(coreCount);
                     for(int i = 0 ; i < 224; i++){
                          serviceSNMP.execute(new SNMPScanner(i,i+1));
                     }
@@ -149,6 +149,38 @@ public class Main {
                     }
                     serviceMemCached.shutdown();
                     break;
+                }
+                case "-dm": {
+                    System.out.println("Running Demonstration Scan");
+                    DNSScanner dnsScanner = new DNSScanner(0,0);
+                    SNMPScanner snmpScanner = new SNMPScanner(0,0);
+                    NTPScanner ntpScanner = new NTPScanner(0,0);
+                    MemCachedScanner memCachedScanner = new MemCachedScanner(0,0);
+                    String fileName = System.getProperty("user.dir") + "/src/com/company/" + "demonstration.txt";
+                    File file = new File(fileName);
+                    Scanner in = new Scanner(file);
+                    String address;
+                    InetAddress current;
+                    while(in.hasNext()){
+                        address = in.nextLine();
+                        current = InetAddress.getByName(address);
+                        dnsScanner.demonstrationScan(current);
+                        snmpScanner.demonstrationScan(current);
+                        ntpScanner.demonstrationScan(current);
+                        try {
+                            InetAddress finalCurrent = current;
+                            CompletableFuture.supplyAsync(()-> {
+                                try {
+                                    memCachedScanner.demonstrationScan(finalCurrent);
+                                } catch (IOException e) {
+                                    //e.printStackTrace();
+                                }
+                                return null;
+                            }).get(1,TimeUnit.SECONDS);
+                        }catch(TimeoutException | InterruptedException | ExecutionException e){
+                            //System.out.println("Time out has occurred");
+                        }
+                    }
                 }
                 case "-w": {
                     break;
