@@ -167,19 +167,7 @@ public class Main {
                         dnsScanner.demonstrationScan(current);
                         snmpScanner.demonstrationScan(current);
                         ntpScanner.demonstrationScan(current);
-                        try {
-                            InetAddress finalCurrent = current;
-                            CompletableFuture.supplyAsync(()-> {
-                                try {
-                                    memCachedScanner.demonstrationScan(finalCurrent);
-                                } catch (IOException e) {
-                                    //e.printStackTrace();
-                                }
-                                return null;
-                            }).get(1,TimeUnit.SECONDS);
-                        }catch(TimeoutException | InterruptedException | ExecutionException e){
-                            //System.out.println("Time out has occurred");
-                        }
+                        memCachedScanner.demonstrationScan(current);
                     }
                 }
                 case "-w": {
