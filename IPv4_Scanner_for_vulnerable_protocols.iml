@@ -10,6 +10,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="source" level="application" />
     <orderEntry type="library" name="org.snmp4j:snmp4j:3.4.4" level="application" />
-    <orderEntry type="library" name="snmp4j-3.4.4 (2)" level="project" />
+    <orderEntry type="library" name="snmp4j-3.4.4.jar" level="project" />
+    <orderEntry type="library" name="me.tongfei:progressbar_2.11:0.4.0" level="project" />
   </component>
 </module>

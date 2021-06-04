@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="me.tongfei:progressbar_2.11:0.4.0" type="repository">
+    <properties maven-id="me.tongfei:progressbar_2.11:0.4.0" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/progressbar_2.11-0.4.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/scala-library-2.11.8.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/progressbar-0.4.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jline-2.12.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

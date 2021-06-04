@@ -1,10 +1,9 @@
 package com.company;
 
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.Reader;
+import me.tongfei.progressbar.ProgressBar;
+
+import java.io.*;
 import java.net.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -101,7 +100,7 @@ public class Main {
                 writingToFile = true;
             }
         }
-        IPv4Addresses FileWriting = new IPv4Addresses(writingToFile);
+        IPv4Addresses manager = new IPv4Addresses(writingToFile);
         for(int j = 0; j < args.length; j++) {
             switch (args[j]){
                 case "-h": {
@@ -152,6 +151,11 @@ public class Main {
                 }
                 case "-dm": {
                     System.out.println("Running Demonstration Scan");
+                    //ProgressBar pb = new ProgressBar("Scanning", 8);
+                    //pb.start();
+                    //OwnProgressBar pb = new OwnProgressBar(8);
+                    //manager.afterBar = true;
+                    manager.pb.draw();
                     DNSScanner dnsScanner = new DNSScanner(0,0);
                     SNMPScanner snmpScanner = new SNMPScanner(0,0);
                     NTPScanner ntpScanner = new NTPScanner(0,0);
@@ -168,7 +172,11 @@ public class Main {
                         snmpScanner.demonstrationScan(current);
                         ntpScanner.demonstrationScan(current);
                         memCachedScanner.demonstrationScan(current);
+                        //pb.step();
+                        manager.pb.update();
+                        //manager.afterBar = true;
                     }
+                    //pb.stop();
                 }
                 case "-w": {
                     break;
