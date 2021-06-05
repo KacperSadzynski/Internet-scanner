@@ -186,7 +186,7 @@ public class IPv4Addresses {
         return isYourFirstTime;
     }
 
-    public class ProgressBar {
+    public class ProgressBar extends Thread{
             private long endState;
             private long actualState;
             private double jump;
@@ -212,7 +212,7 @@ public class IPv4Addresses {
                 }
                 System.out.print("]");
             }
-            public void update(){
+            public synchronized void update(){
                 actualState++;
                 draw();
             }
