@@ -26,6 +26,7 @@ public class IPv4Addresses {
     protected int amplification;
     protected String messageTCP;
     protected int messageTCPSize;
+    public static ProgressBar pb;
     /**
      * Generates IPv4 addresses limited by BEGIN, END variables<br/>
      * For each generated address, query() method is being used<br/>
@@ -36,8 +37,9 @@ public class IPv4Addresses {
         try {
             for (int i = BEGIN; i < END; i++) {
                 rawIPList[0] = i;
-                if (i == 0 || i == 10 || i == 127)
+                if (i == 0 || i == 10 || i == 127){
                     continue;
+                }
                 for (int j = 0; j < 256; j++) {
                     rawIPList[1] = j;
                     //System.out.println(i + "." + j + ".0.0 reached");
@@ -47,12 +49,15 @@ public class IPv4Addresses {
                         for (int l = 0; l < 256; l++) {
                             rawIPList[3] = l;
                             String address = rawIPList[0].toString() + "." + rawIPList[1].toString() + "." + rawIPList[2].toString() + "." + rawIPList[3].toString();
-                            if (address.equals("255.255.255.255"))
+                            if (address.equals("255.255.255.255")){
+                                pb.update();
                                 continue;
+                            }
                             //address = "103.150.0.32";
                             //System.out.println(address);
                             InetAddress current = InetAddress.getByName(address);
                             query(current);
+                            pb.update();
                         }
                     }
                 }
@@ -83,8 +88,9 @@ public class IPv4Addresses {
      * Used when a user writes -w in args<br/>
      * @param f used to set  toFile variable
      */
-    public IPv4Addresses(boolean f){
+    public IPv4Addresses(boolean f, long states){
         toFile = f;
+        pb = new ProgressBar(states);
     }
 
     /**
@@ -146,7 +152,8 @@ public class IPv4Addresses {
             if (toFile) {
                 writeToFile(serverAddress, bytesRead, protocol);
             }
-            System.out.println(packetType + " IP address " + serverAddress + "  \t" + messageLength + " bytes sent " + bytesRead + " bytes received with " + protocol);
+            System.out.println("\r" + packetType + " IP address " + serverAddress + "  \t" + messageLength + " bytes sent " + bytesRead + " bytes received with " + protocol);
+            pb.draw();
         }
     }
     protected synchronized boolean fileManager(boolean isYourFirstTime, int sizeUdp){
@@ -178,4 +185,45 @@ public class IPv4Addresses {
         }
         return isYourFirstTime;
     }
+
+    public class ProgressBar {
+            private long endState;
+            private long actualState;
+            private double jump;
+            public ProgressBar(){
+                actualState = 0L;
+                endState = 100L;
+                jump = 2;
+            }
+            public ProgressBar(long end){
+                actualState = 0L;
+                endState = end;
+                jump = 50.0/(double)endState;
+            }
+            public void draw(){
+                System.out.print("\r Scanning [");
+                int howManyJumps = (int)(actualState*jump);
+                for (int i = 0; i < howManyJumps; i++)
+                {
+                    System.out.print("=");
+                }
+                for (int i = howManyJumps; i < 50; i++){
+                    System.out.print(" ");
+                }
+                System.out.print("]");
+            }
+            public void update(){
+                actualState++;
+                draw();
+            }
+            public void update(long n){
+                actualState += n;
+                draw();
+            }
+            public void updateTo(long n){
+                //TODO kontrola poprawności
+                actualState = n;
+                draw();
+            }
+        }
 }

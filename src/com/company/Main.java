@@ -64,10 +64,6 @@ public class Main {
                     args[i] = argList.get(j).getShortcut();
                     argList.remove(j);
                     flag = true;
-                    if (args[i].equals("-w")) {
-                        IPv4Addresses setFlag = new IPv4Addresses(true);
-                    }
-
                     break;
                 }
             }
@@ -95,13 +91,29 @@ public class Main {
            System.out.println("Wrong argument list. Type --help or -h to check command list");
            return;
        }
-       boolean writingToFile = false;
-        for (int i = 0; i < args.length; i++ ){
-            if (args[i].equals("-w")) {
-                writingToFile = true;
+        boolean writingToFile = false;
+        boolean isDemo = false;
+        if (args[0].equals("-dm")){
+            isDemo = true;
+        }
+        else{
+            for (int i = 0; i < args.length; i++ ){
+                if (args[i].equals("-w")) {
+                    writingToFile = true;
+                }
             }
         }
-        IPv4Addresses FileWriting = new IPv4Addresses(writingToFile);
+        long statesNumber = args.length;
+        if (writingToFile)
+        {
+            statesNumber--;
+        }
+        statesNumber *= 221L*256L*256L*256L;
+        IPv4Addresses manager;
+        if (isDemo)
+            manager = new IPv4Addresses(false, 8L);
+        else
+            manager = new IPv4Addresses(writingToFile, statesNumber);
         for(int j = 0; j < args.length; j++) {
             switch (args[j]){
                 case "-h": {
@@ -152,6 +164,7 @@ public class Main {
                 }
                 case "-dm": {
                     System.out.println("Running Demonstration Scan");
+                    manager.pb.draw();
                     DNSScanner dnsScanner = new DNSScanner(0,0);
                     SNMPScanner snmpScanner = new SNMPScanner(0,0);
                     NTPScanner ntpScanner = new NTPScanner(0,0);
@@ -168,6 +181,7 @@ public class Main {
                         snmpScanner.demonstrationScan(current);
                         ntpScanner.demonstrationScan(current);
                         memCachedScanner.demonstrationScan(current);
+                        manager.pb.update();
                     }
                 }
                 case "-w": {
