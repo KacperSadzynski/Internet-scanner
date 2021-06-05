@@ -37,15 +37,18 @@ public class SNMPScanner extends IPv4Addresses implements Runnable{
      * @param begin used to set BEGIN variable
      * @param end used to set END variable
      */
-    public SNMPScanner(int begin, int end){
+    public SNMPScanner(int begin, int end) throws IOException {
         amplification = 1;
         packetType = "SNMP";
         fileName = "SNMP_Vulnerable.txt";
         this.BEGIN=begin;
         this.END=end;
+        /*
         pdu = new PDU();
         pdu.add(new VariableBinding(new OID(new int[] {1,3,6,1,2,1,1,1,0})));
         pduSize = pdu.getBERLength();
+         */
+        buildPacket();
         if(isYourFirstTime){
             isYourFirstTime = fileManager(isYourFirstTime, pduSize);
         }
@@ -75,6 +78,7 @@ public class SNMPScanner extends IPv4Addresses implements Runnable{
      */
     @Override
     public void query(InetAddress serverAddress) {
+        /*
          Address address = GenericAddress.parse("udp:" + serverAddress + "/" + SNMP_SERVER_PORT);
          CommunityTarget target = new CommunityTarget();
          target.setCommunity(new OctetString("public"));
@@ -104,5 +108,39 @@ public class SNMPScanner extends IPv4Addresses implements Runnable{
                 } catch (IOException ignore) { }
             }
         }
+
+         */
+        vulnerability(sendUdpPacket(serverAddress, SNMP_SERVER_PORT, 100), messageUdp.length, serverAddress.toString(), "UDP");
+    }
+    protected void buildPacket() throws IOException {
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        DataOutputStream dos = new DataOutputStream(baos);
+
+        /** Building SNMP packet **/
+
+        dos.writeShort(0x3029);
+        dos.writeShort(0x0201);
+        dos.writeShort(0x0104);
+        dos.writeShort(0x0670);
+        dos.writeShort(0x7562);
+        dos.writeShort(0x6c69);
+        dos.writeShort(0x63a0);
+        dos.writeShort(0x1c02);
+        dos.writeShort(0x0401);
+        dos.writeShort(0x0203);
+        dos.writeShort(0x0402);
+        dos.writeShort(0x0100);
+        dos.writeShort(0x0201);
+        dos.writeShort(0x0030);
+        dos.writeShort(0x0e30);
+        dos.writeShort(0x0c06);
+        dos.writeShort(0x082b);
+        dos.writeShort(0x0601);
+        dos.writeShort(0x0201);
+        dos.writeShort(0x0101);
+        dos.writeShort(0x0005);
+        dos.writeShort(0x00);
+        messageUdp = baos.toByteArray();
     }
 }
