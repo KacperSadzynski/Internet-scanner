@@ -1,5 +1,9 @@
 --help
 -h
+--demonstration
+-dm
+--write
+-w
 --DNS
 -d
 --SNMP
@@ -8,7 +12,3 @@
 -n
 --MemCached
 -mc
---write
--w
---demonstration
--dm

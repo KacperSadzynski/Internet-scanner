@@ -24,6 +24,7 @@ import java.util.concurrent.*;
 public class Main {
     private static List<ArgAvailable> argList = new ArrayList<>();
     private static ArgAvailable help;
+    private static ArgAvailable demonstration;
 
     /**
      * setArgList method fills the argList with allowed arguments by reading the file "args.txt"
@@ -34,6 +35,7 @@ public class Main {
         File file = new File(fileName);
         Scanner in = new Scanner(file);
         help = new ArgAvailable(in.nextLine(),in.nextLine());
+        demonstration = new ArgAvailable(in.nextLine(), in.nextLine());
         while(in.hasNext()){
             argList.add(new ArgAvailable(in.nextLine(),in.nextLine()));
         }
@@ -56,6 +58,14 @@ public class Main {
         else if (help.match(args[0])) {
             return false;
         }
+        /* checking if --demonstration or -dm has been typed */
+        if(demonstration.match(args[0]) && args.length == 1) {
+            args[0] = demonstration.getShortcut();
+            return true;
+        }
+        else if (demonstration.match(args[0])) {
+            return false;
+        }
         /* checking the rest of arguments typed by an user */
         for(int i = 0; i < args.length; i++) {
             boolean  flag = false; //is argument given by an user available
@@ -64,6 +74,9 @@ public class Main {
                     args[i] = argList.get(j).getShortcut();
                     argList.remove(j);
                     flag = true;
+                    if(args[i].equals("-w")&&args.length==1){
+                        return false;
+                    }
                     break;
                 }
             }
@@ -111,7 +124,7 @@ public class Main {
         statesNumber *= 221L*256L*256L*256L;
         IPv4Addresses manager;
         if (isDemo)
-            manager = new IPv4Addresses(false, 8L);
+            manager = new IPv4Addresses(false, 13L);
         else
             manager = new IPv4Addresses(writingToFile, statesNumber);
         for(int j = 0; j < args.length; j++) {

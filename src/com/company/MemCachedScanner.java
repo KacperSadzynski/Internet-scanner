@@ -96,7 +96,7 @@ public class MemCachedScanner extends IPv4Addresses implements Runnable {
         BufferedReader reader = null;
         try{
             tcpSocket = new Socket();
-            tcpSocket.connect(new InetSocketAddress(serverAddress, MEMCACHED_SERVER_PORT), 1000);
+            tcpSocket.connect(new InetSocketAddress(serverAddress, MEMCACHED_SERVER_PORT), 500);
             //tcpSocket = new Socket(serverAddress, MEMCACHED_SERVER_PORT);
             Writer out = new OutputStreamWriter(tcpSocket.getOutputStream(), "ASCII");
             BufferedReader in = new BufferedReader(new InputStreamReader(tcpSocket.getInputStream(), "ASCII"));
