@@ -24,10 +24,10 @@ public class ArgAvailable {
     }
 
     /**
-     *
+     * Compares the passed argument with available one
      * @param arg will be compare with fullName and shortcut
-     * @return boolean false if arg is not equal to fullName or shortcut
-     *                 true  if arg is equal to fullName or shortcut
+     * @return false if arg is not equal to fullName or shortcut
+     *         true  if arg is equal to fullName or shortcut
      */
     public boolean match(String arg){
         return (arg.equals(fullName) || arg.equals(shortcut));

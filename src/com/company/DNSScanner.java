@@ -1,9 +1,10 @@
 package com.company;
 
-import java.io.*;
-import java.math.BigInteger;
-import java.net.*;
-import java.util.concurrent.TimeUnit;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.net.InetAddress;
 
 
 /**
@@ -15,7 +16,7 @@ import java.util.concurrent.TimeUnit;
  * If the toFile flag is TRUE it writes to DNS_Vulnerable.txt file output as well<br/>
  * Instance Variables:<br/>
  * static final int DNS_SERVER_PORT - represents DNS server port, set on 53<br/>
- * static boolean isYourFristTime - the flag that checks if a given object of a class is its first created object<br/>
+ * static boolean isYourFirstTime - the flag that checks if a given object of a class is its first created object<br/>
  * @see IPv4Addresses
  */
 public class DNSScanner extends IPv4Addresses implements Runnable {
@@ -26,11 +27,10 @@ public class DNSScanner extends IPv4Addresses implements Runnable {
     /**
      * Constructor<br/>
      * It removes file DNS_Vulnerable.txt if exists to avoid appending new output to the old one using fileManager method<br/>
-     * Builds messageUdp byte array using the buildPacket() method<br/>
+     * Builds messageUdp byte array using the {@link #buildPacket() buildPacket} method<br/>
      * Sets parameters: amplification, packetType, fileName corresponding to the DNSScanner<br/>
      * @param begin used to set BEGIN variable
      * @param end used to set END variable
-     * @throws IOException
      * @see #fileManager(boolean, int)
      * @see IPv4Addresses
      */
@@ -45,26 +45,9 @@ public class DNSScanner extends IPv4Addresses implements Runnable {
             isYourFirstTime = fileManager(isYourFirstTime, messageUdp.length);
         }
     }
-
     /**
-     * Scans IPv4 addresses pool limited by BEGIN, END variables<br/>
-     * This method is being executed by a thread only<br/>
-     * @see #scan()
-     */
-    @Override
-    public void run() {
-        try {
-            scan();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    /**
-     * Builds a DNS packet<br/>
-     * builded packet is being saved to messageUdp byte array<br/>
-     * @throws IOException
+     * Builds a DNS packet which will ask server about text record in domain Live.com <br/>
+     * built packet is being saved to messageUdp byte array<br/>
      * @see IPv4Addresses
      */
     protected void buildPacket() throws IOException {
@@ -73,7 +56,7 @@ public class DNSScanner extends IPv4Addresses implements Runnable {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
 
-        /** Building DNS packet **/
+        // Building DNS packet
 
         //Identifier
         dos.writeShort(0x1234);
@@ -97,8 +80,8 @@ public class DNSScanner extends IPv4Addresses implements Runnable {
         String[] domainParts = domain.split("\\.");
 
         //coding domain name in UTF-8 (HEX)
-        for (int i = 0; i<domainParts.length; i++) {
-            byte[] domainBytes = domainParts[i].getBytes("UTF-8");
+        for (String domainPart : domainParts) {
+            byte[] domainBytes = domainPart.getBytes("UTF-8");
             dos.writeByte(domainBytes.length);
             dos.write(domainBytes);
         }
@@ -113,20 +96,35 @@ public class DNSScanner extends IPv4Addresses implements Runnable {
         dos.writeShort(0x0001);
         messageUdp = baos.toByteArray();
     }
-    
+    /**
+     * Scans IPv4 addresses pool limited by BEGIN, END variables<br/>
+     * This method is being executed by a thread only<br/>
+     * @see #scan()
+     */
+    @Override
+    public void run() {
+        try {
+            scan();
+        }
+        catch (InterruptedIOException ex){
+            System.out.println("DNSThread interrupted");
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     /**
      * Creates a socket with UDP transport protocol<br/>
      * Sends a query to a specific IP address, then waits a limited time for an answer<br/>
      * If an answer was received it checks its length<br/>
      * When conditions were met, method prints out the message and write to File if toFile flag equals TRUE<br/>
      * @param serverAddress represents an IP address on which method sends a query
-     * @throws IOException
      * @see #vulnerability(int, int, String, String)
      * @see #sendUdpPacket(InetAddress, int, int)
      * @see IPv4Addresses
      */
     @Override
-    public void query(InetAddress serverAddress) throws IOException {
+    public void query(InetAddress serverAddress) {
         vulnerability(sendUdpPacket(serverAddress, DNS_SERVER_PORT, 40), messageUdp.length, serverAddress.toString(), "UDP");
     }
 }

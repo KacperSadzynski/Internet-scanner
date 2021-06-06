@@ -1,16 +1,30 @@
 List of commands:
 --help / -h
 This command list all commands that you can type in list of arguments while running the program.
-This command cannot be typed along side with others listed here commands!
+This command cannot be typed along side with other listed here commands!
 
 --DNS / -d
 This command scans all DNS servers having public IPv4 addresses
 If DNS server responses with big amplification program will list this server
 
 --SNMP / -s
-
+This command scans all SNMP servers having public IPv4 addresses
+If SNMP server responses with big amplification program will list this server
 
 --NTP / -n
-
+This command scans all NTP servers having public IPv4 addresses
+If NTP server responses with big amplification program will list this server
 
 --MemCached / -mc
+This command scans all MemCached servers having public IPv4 addresses
+If MemCached server responses with big amplification program will list this server
+
+--write / -w
+This command turns on writing to file mode. Addresses which responded with big amplification will be saved in a file named like protocol_Vulnerable.txt (e.g. DNS_Vulnerable.txt)
+WARNING! New session always deletes all old files in order to have actual information. If this argument is not given, the files also will be deleted.
+This command cannot be typed without other arguments.
+
+--demonstration / -dm
+This command runs a demo version of the program.
+It scans a few addresses from a pool (defined in file 'demonstration.txt') with all protocols.
+This command cannot be typed along side with other listed here commands!

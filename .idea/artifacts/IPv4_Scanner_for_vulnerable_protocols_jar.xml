@@ -3,8 +3,6 @@
     <output-path>$PROJECT_DIR$/out/artifacts/IPv4_Scanner_for_vulnerable_protocols_jar</output-path>
     <root id="archive" name="IPv4_Scanner_for_vulnerable_protocols.jar">
       <element id="module-output" name="IPv4_Scanner_for_vulnerable_protocols" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/lib/snmp4j-3.4.4.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/snmp4j/snmp4j/3.4.4/snmp4j-3.4.4.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

@@ -1,41 +1,36 @@
 package com.company;
 
-import org.snmp4j.CommunityTarget;
-import org.snmp4j.PDU;
-import org.snmp4j.Snmp;
-import org.snmp4j.event.ResponseEvent;
-import org.snmp4j.mp.SnmpConstants;
-import org.snmp4j.smi.*;
-import org.snmp4j.smi.OctetString;
-import org.snmp4j.smi.VariableBinding;
-import org.snmp4j.transport.DefaultUdpTransportMapping;
-
-import java.io.*;
-import java.net.DatagramPacket;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.net.InetAddress;
-import java.util.Scanner;
 
 /**
  * SNMPScanner class inherits from the IPv4Addresses class and Runnable interface<br/>
  * By default, this class is being executed by a thread<br/>
+ * It builds a SNMP packet that is sent by query(), then a thread execute run() method<br/>
  * It scans all public IPv4 addresses limited by BEGIN, END variables<br/>
- * If the amplification of the sent packet is big enough it print out the IP of this server<br/>
+ * If the amplification of the sent packet is big enough it prints out the IP of this server<br/>
  * If the toFile flag is TRUE it writes to SNMP_Vulnerable.txt file output as well<br/>
- * <b/>This class uses snmp4j package</b><br/>
- * Instance Variables:
- * static final int SNMP_SERVER_PORT - represents SNMP server port, set on 161
+ * Instance Variables:<br/>
+ * static final int SNMP_SERVER_PORT - represents SNMP server port, set on 161<br/>
+ * static boolean isYourFirstTime - the flag that checks if a given object of a class is its first created object<br/>
  * @see IPv4Addresses
  */
 public class SNMPScanner extends IPv4Addresses implements Runnable{
+
     private static final int SNMP_SERVER_PORT = 161;
     private static boolean isYourFirstTime = true;
-    private PDU pdu;
-    private int pduSize;
     /**
      * Constructor<br/>
-     * It removes file SNMP_Vulnerable.txt if exists to avoid appending new output to the old one<br/>
+     * It removes file SNMP_Vulnerable.txt if exists to avoid appending new output to the old one using fileManager method<br/>
+     * Builds messageUdp byte array using the {@link #buildPacket() buildPacket} method<br/>
+     * Sets parameters: amplification, packetType, fileName corresponding to the SNMPScanner<br/>
      * @param begin used to set BEGIN variable
      * @param end used to set END variable
+     * @see #fileManager(boolean, int)
+     * @see IPv4Addresses
      */
     public SNMPScanner(int begin, int end) throws IOException {
         amplification = 1;
@@ -43,82 +38,22 @@ public class SNMPScanner extends IPv4Addresses implements Runnable{
         fileName = "SNMP_Vulnerable.txt";
         this.BEGIN=begin;
         this.END=end;
-        /*
-        pdu = new PDU();
-        pdu.add(new VariableBinding(new OID(new int[] {1,3,6,1,2,1,1,1,0})));
-        pduSize = pdu.getBERLength();
-         */
         buildPacket();
         if(isYourFirstTime){
-            isYourFirstTime = fileManager(isYourFirstTime, pduSize);
+            isYourFirstTime = fileManager(isYourFirstTime, messageUdp.length);
         }
     }
-
     /**
-     * Scans IPv4 addresses pool limited by BEGIN, END variables<br/>
-     * This method is being executed by a thread only<br/>
+     * Builds a SNMP packet which will ask about server's system description<br/>
+     * built packet is being saved to messageUdp byte array<br/>
+     * @see IPv4Addresses
      */
-    public void run() {
-        try {
-            scan();
-        } catch (InterruptedIOException ex){
-            System.out.println("SNMPThread interrupted");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Creates a socket with UDP transport protocol<br/>
-     * Sends a query to a specific IP address, then waits a limited time for an answer<br/>
-     * If an answer was received it checks its length<br/>
-     * When conditions were met, method prints out the message and write to File if toFile flag equals TRUE<br/>
-     * @param serverAddress represents an IP address on which method sends a query
-     * @throws IOException
-     */
-    @Override
-    public void query(InetAddress serverAddress) {
-        /*
-         Address address = GenericAddress.parse("udp:" + serverAddress + "/" + SNMP_SERVER_PORT);
-         CommunityTarget target = new CommunityTarget();
-         target.setCommunity(new OctetString("public"));
-         target.setAddress(address);
-         target.setVersion(SnmpConstants.version2c);
-         target.setTimeout(50);
-         target.setRetries(1);
-         Snmp snmp = null;
-         DefaultUdpTransportMapping transport = null;
-         try {
-            transport = new DefaultUdpTransportMapping();
-            snmp = new Snmp(transport);
-            snmp.removeNotificationListener(address);
-            snmp.listen();
-            pdu.setType(PDU.GET);
-            ResponseEvent respEvent = snmp.send(pdu, target);
-            PDU response = respEvent.getResponse();
-            if (response != null) {
-                vulnerability(response.getBERLength(), pduSize, serverAddress.toString(), "UDP");
-            }
-        } catch (Exception ignore) { }
-        finally {
-            if (snmp != null) {
-                try {
-                    snmp.removeTransportMapping(transport);
-                    snmp.close();
-                } catch (IOException ignore) { }
-            }
-        }
-
-         */
-        vulnerability(sendUdpPacket(serverAddress, SNMP_SERVER_PORT, 100), messageUdp.length, serverAddress.toString(), "UDP");
-    }
     protected void buildPacket() throws IOException {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
 
-        /** Building SNMP packet **/
-
+        //Building SNMP packet
         dos.writeShort(0x3029);
         dos.writeShort(0x0201);
         dos.writeShort(0x0104);
@@ -142,5 +77,36 @@ public class SNMPScanner extends IPv4Addresses implements Runnable{
         dos.writeShort(0x0005);
         dos.writeShort(0x00);
         messageUdp = baos.toByteArray();
+    }
+    /**
+     * Scans IPv4 addresses pool limited by BEGIN, END variables<br/>
+     * This method is being executed by a thread only<br/>
+     * @see #scan()
+     */
+    @Override
+    public void run() {
+        try {
+            scan();
+        }
+         catch (InterruptedIOException ex){
+            System.out.println("SNMPThread interrupted");
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    /**
+     * Creates a socket with UDP transport protocol<br/>
+     * Sends a query to a specific IP address, then waits a limited time for an answer<br/>
+     * If an answer was received it checks its length<br/>
+     * When conditions were met, method prints out the message and write to File if toFile flag equals TRUE<br/>
+     * @param serverAddress represents an IP address on which method sends a query
+     * @see #vulnerability(int, int, String, String)
+     * @see #sendUdpPacket(InetAddress, int, int)
+     * @see IPv4Addresses
+     */
+    @Override
+    public void query(InetAddress serverAddress) {
+        vulnerability(sendUdpPacket(serverAddress, SNMP_SERVER_PORT, 100), messageUdp.length, serverAddress.toString(), "UDP");
     }
 }

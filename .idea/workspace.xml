@@ -7,9 +7,83 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7503de65-05eb-489c-be46-433497de7609" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/IPv4_Scanner_for_vulnerable_protocols_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/IPv4_Scanner_for_vulnerable_protocols_jar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/snmp4j_3_4_4__2_.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DNS_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/IPv4_Scanner_for_vulnerable_protocols.iml" beforeDir="false" afterPath="$PROJECT_DIR$/IPv4_Scanner_for_vulnerable_protocols.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/domains.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/snmp4j-3.4.4.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/AUTHORS" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/AboutDialog.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/AudioFilePlayer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/SNMPAgentTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/SNMPInquisitor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/SNMPMultithreadTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/SNMPSample.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/SNMPTrapReceiveTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/SNMPTrapSendTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/SNMPTrapTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPBERCodec.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPBadValueException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPBitString.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPCounter32.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPCounter64.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPGauge32.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPGetException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPIPAddress.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPInformRequestSenderInterface.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPInteger.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPMessage.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPNSAPAddress.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPNull.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPObject.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPObjectIdentifier.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPOctetString.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPPDU.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPRequestException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPRequestListener.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPSequence.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPSetException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPTLV.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPTimeTicks.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPTrapReceiverInterface.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPTrapSenderInterface.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPUInteger32.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPUnknownObject.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPVarBindList.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPVariablePair.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPv1AgentInterface.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPv1CommunicationInterface.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPv1TrapListener.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPv1TrapPDU.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPv2BulkRequestPDU.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPv2InformRequestListener.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPv2InformRequestPDU.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPv2TrapListener.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/SNMPv2TrapPDU.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/source/snmp/package.html" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/artifacts/IPv4_Scanner_for_vulnerable_protocols_jar/IPv4_Scanner_for_vulnerable_protocols.jar" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/IPv4_Scanner_for_vulnerable_protocols_jar/IPv4_Scanner_for_vulnerable_protocols.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/IPv4_Scanner_for_vulnerable_protocols/com/company/DNSScanner.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/IPv4_Scanner_for_vulnerable_protocols/com/company/DNSScanner.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/IPv4_Scanner_for_vulnerable_protocols/com/company/IPv4Addresses$ProgressBar.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/IPv4_Scanner_for_vulnerable_protocols/com/company/IPv4Addresses$ProgressBar.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/IPv4_Scanner_for_vulnerable_protocols/com/company/IPv4Addresses.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/IPv4_Scanner_for_vulnerable_protocols/com/company/IPv4Addresses.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/IPv4_Scanner_for_vulnerable_protocols/com/company/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/IPv4_Scanner_for_vulnerable_protocols/com/company/Main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/IPv4_Scanner_for_vulnerable_protocols/com/company/MemCachedScanner.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/IPv4_Scanner_for_vulnerable_protocols/com/company/MemCachedScanner.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/IPv4_Scanner_for_vulnerable_protocols/com/company/NTPScanner.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/IPv4_Scanner_for_vulnerable_protocols/com/company/NTPScanner.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/IPv4_Scanner_for_vulnerable_protocols/com/company/SNMPScanner.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/IPv4_Scanner_for_vulnerable_protocols/com/company/SNMPScanner.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/ArgAvailable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/ArgAvailable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/DNSScanner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/DNSScanner.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/company/IPv4Addresses.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/IPv4Addresses.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/MemCachedScanner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/MemCachedScanner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/NTPScanner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/NTPScanner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/SNMPScanner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/SNMPScanner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/demonstration.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/demonstration.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/help.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/help.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typeID.txt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,12 +156,10 @@
     <configuration name="JAR" type="JarApplication">
       <option name="JAR_PATH" value="$PROJECT_DIR$/out/artifacts/IPv4_Scanner_for_vulnerable_protocols_jar/IPv4_Scanner_for_vulnerable_protocols.jar" />
       <option name="PROGRAM_PARAMETERS" value="-dm" />
-      <option name="WORKING_DIRECTORY" value="E:\Szkoła\Internet-scanner\" />
+      <option name="WORKING_DIRECTORY" value="C:\Users\Bob Marley\Documents\Github\Internet-scanner\" />
       <option name="ALTERNATIVE_JRE_PATH" />
       <method v="2">
-        <option name="BuildArtifacts" enabled="true">
-          <artifact name="IPv4_Scanner_for_vulnerable_protocols:jar" />
-        </option>
+        <option name="BuildArtifacts" enabled="true" />
       </method>
     </configuration>
     <list>

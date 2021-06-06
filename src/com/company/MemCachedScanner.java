@@ -1,9 +1,9 @@
 package com.company;
 
 import java.io.*;
-import java.net.*;
-import java.util.concurrent.*;
-import java.util.zip.GZIPInputStream;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 
 /**
  * MemCachedScanner class inherits from the IPv4Addresses class and Runnable interface<br/>
@@ -14,7 +14,7 @@ import java.util.zip.GZIPInputStream;
  * If the toFile flag is TRUE it writes to MemCached_Vulnerable.txt file output as well<br/>
  * Instance Variables:<br/>
  * static final int MEMCACHED_SERVER_PORT - represents MemCached server port, set on 11211<br/>
- * byte[] memCachedFrame - byte array that represents MemCached packet<br/>
+ * static boolean isYourFirstTime - the flag that checks if a given object of a class is its first created object<br/>
  * @see IPv4Addresses
  */
 public class MemCachedScanner extends IPv4Addresses implements Runnable {
@@ -25,11 +25,13 @@ public class MemCachedScanner extends IPv4Addresses implements Runnable {
     /**
      * Constructor<br/>
      * It removes file MemCached_Vulnerable.txt if exists to avoid appending new output to the old one<br/>
-     * Builds memCachedFrame byte array using the buildPacket() method<br/>
-     *
+     * Builds messageUdp byte array using the {@link #buildPacket() buildPacket} method<br/>
+     * Writes to messageTCP String "stats\r\n" which will ask about server's stats<br/>
+     * Sets parameters: amplification, packetType, fileName corresponding to the MemCachedScanner, messageTCPSize<br/>
      * @param begin used to set BEGIN variable
-     * @param end   used to set END variable
-     * @throws IOException
+     * @param end used to set END variable
+     * @see #fileManager(boolean, int)
+     * @see IPv4Addresses
      */
     public MemCachedScanner(int begin, int end) throws IOException {
         amplification = 1;
@@ -46,10 +48,8 @@ public class MemCachedScanner extends IPv4Addresses implements Runnable {
     }
 
     /**
-     * Builds a MemCached packet<br/>
-     * build packet is being saved to memCachedFrame, which is a byte array<br/>
-     *
-     * @throws IOException
+     * Builds a MemCached packet which will ask about server's stats<br/>
+     * built packet is being saved to memCachedFrame, which is a byte array<br/>
      */
     protected void buildPacket() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -76,7 +76,11 @@ public class MemCachedScanner extends IPv4Addresses implements Runnable {
         //Extras, Key, Values - None
         messageUdp = baos.toByteArray();
     }
-
+    /**
+     * Scans IPv4 addresses pool limited by BEGIN, END variables<br/>
+     * This method is being executed by a thread only<br/>
+     * @see #scan()
+     */
     @Override
     public void run() {
         try {
@@ -87,55 +91,64 @@ public class MemCachedScanner extends IPv4Addresses implements Runnable {
             e.printStackTrace();
         }
     }
-
-    private void queryUDP(InetAddress serverAddress){
+    /**
+     * Creates a socket with UDP transport protocol<br/>
+     * Sends a query to a specific IP address, then waits a limited time for an answer<br/>
+     * If an answer was received it checks its length<br/>
+     * When conditions were met, method prints out the message and write to File if toFile flag equals TRUE<br/>
+     * @param serverAddress represents an IP address on which method sends a query
+     * @see #vulnerability(int, int, String, String)
+     * @see #sendUdpPacket(InetAddress, int, int)
+     * @see IPv4Addresses
+     */
+    private void queryUDP(InetAddress serverAddress) {
         vulnerability(sendUdpPacket(serverAddress,MEMCACHED_SERVER_PORT, 40), messageUdp.length, serverAddress.toString(), "UDP");
     }
+    /**
+     * Creates a socket with TCP transport protocol<br/>
+     * When connection between client and server is established, it sends a query<br/>
+     * If an answer was received it checks its length<br/>
+     * When conditions were met, method prints out the message and write to File if toFile flag equals TRUE<br/>
+     * @param serverAddress represents an IP address on which method sends a query
+     * @see #vulnerability(int, int, String, String)
+     * @see IPv4Addresses
+     */
     private void queryTCP(InetAddress serverAddress){
         Socket tcpSocket = null;
         BufferedReader reader = null;
         try{
             tcpSocket = new Socket();
             tcpSocket.connect(new InetSocketAddress(serverAddress, MEMCACHED_SERVER_PORT), 500);
-            //tcpSocket = new Socket(serverAddress, MEMCACHED_SERVER_PORT);
             Writer out = new OutputStreamWriter(tcpSocket.getOutputStream(), "ASCII");
-            BufferedReader in = new BufferedReader(new InputStreamReader(tcpSocket.getInputStream(), "ASCII"));
             out.write(messageTCP);
             out.flush();
-            reader = new BufferedReader(new InputStreamReader(tcpSocket.getInputStream()));
+            reader = new BufferedReader(new InputStreamReader(tcpSocket.getInputStream(), "ASCII"));
             String buffer = null;
             String received = "";
-            int i=0;
-            //reading message by lines while line is not empty
             while ((buffer = reader.readLine()) != null){
                 received += buffer;
-                //System.out.println(buffer);
                 if(buffer.equals("END")) break;
             }
-            //System.out.println(received);
             int responseSize = received.getBytes().length;
-            //System.out.println(responseSize);
             reader.close();
             tcpSocket.close();
-            
             vulnerability(responseSize, messageTCPSize, serverAddress.toString(), "TCP");
-        } catch (Exception e) {
-            //System.out.println("IP address " + serverAddress.toString() + " Inny wyjatek " + e.getMessage());
-            //System.err.println(e.getMessage());
-        } finally {
+        }
+        catch (Exception ignore) { }
+        finally {
             if (tcpSocket != null) {
                 try {
                     tcpSocket.close();
-                } catch (IOException e) {
-                    //ignore
-                } catch (NullPointerException ex1) {
+                }
+                catch (IOException ignore) { }
+                catch (NullPointerException ex1) {
                     tcpSocket = null;
                 }
             }
         }
     }
     /**
-     * Calls methods quetyUDP(InetAddress) and quetyTCP(InetAddress)<br/>
+     * Calls methods queryUDP(InetAddress) and queryTCP(InetAddress)<br/>
      * Scans address given as parameter firstly with UDP and later with TCP<br/>
      * @param serverAddress represents an IP address on which method sends a query
      */
