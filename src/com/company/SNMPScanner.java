@@ -33,7 +33,7 @@ public class SNMPScanner extends IPv4Addresses implements Runnable{
      * @see IPv4Addresses
      */
     public SNMPScanner(int begin, int end) throws IOException {
-        amplification = 1;
+        amplification = 2;
         packetType = "SNMP";
         fileName = "SNMP_Vulnerable.txt";
         this.BEGIN=begin;

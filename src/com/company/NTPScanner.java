@@ -34,7 +34,7 @@ public class NTPScanner extends IPv4Addresses implements Runnable{
      * @see IPv4Addresses
      */
     public NTPScanner(int begin, int end) throws IOException {
-        amplification = 1;
+        amplification = 3;
         packetType = "NTP";
         fileName = "NTP_Vulnerable.txt";
         this.BEGIN = begin;

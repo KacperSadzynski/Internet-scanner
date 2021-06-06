@@ -34,7 +34,7 @@ public class MemCachedScanner extends IPv4Addresses implements Runnable {
      * @see IPv4Addresses
      */
     public MemCachedScanner(int begin, int end) throws IOException {
-        amplification = 1;
+        amplification = 100;
         packetType = "MemCached";
         fileName = "MemCached_Vulnerable.txt";
         messageTCP = "stats\r\n";

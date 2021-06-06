@@ -35,7 +35,7 @@ public class DNSScanner extends IPv4Addresses implements Runnable {
      * @see IPv4Addresses
      */
     public DNSScanner(int begin, int end) throws IOException {
-        amplification = 1;
+        amplification = 4;
         packetType = "DNS";
         fileName = "DNS_Vulnerable.txt";
         this.BEGIN = begin;
