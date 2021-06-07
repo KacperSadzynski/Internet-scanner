@@ -178,7 +178,7 @@ public class IPv4Addresses {
             if (toFile) {
                 writeToFile(serverAddress, bytesRead, protocol);
             }
-            System.out.println("\r" + packetType + " IP address " + serverAddress + "  \t" + messageLength + " bytes sent " + bytesRead + " bytes received with " + protocol);
+            System.out.println("\r" + packetType + " IP address " + serverAddress + "  \t" + messageLength + " bytes sent " + bytesRead + " bytes received with " + protocol + "                      ");
             pb.draw();
         }
     }
@@ -270,6 +270,8 @@ public class IPv4Addresses {
                     System.out.print(" ");
                 }
                 System.out.print("]\tScanned " + actualState + "/" + endState); //the end of the bar and information how many steps have been done (actualState) of ('/') full steps' number (endState)
+                if (actualState == endState)
+                    System.out.print("\n");
             }
             /**
              * Default update method.<br/>

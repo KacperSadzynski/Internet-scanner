@@ -9,7 +9,7 @@
     <list default="true" id="7503de65-05eb-489c-be46-433497de7609" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/artifacts/IPv4_Scanner_for_vulnerable_protocols_jar/IPv4_Scanner_for_vulnerable_protocols.jar" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/IPv4_Scanner_for_vulnerable_protocols_jar/IPv4_Scanner_for_vulnerable_protocols.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/company/NTPScanner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/NTPScanner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/IPv4Addresses.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/IPv4Addresses.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,6 +47,17 @@
     <property name="project.structure.side.proportion" value="0.2" />
   </component>
   <component name="RunManager" selected="JAR Application.JAR">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.company.Main" />
       <module name="IPv4_Scanner_for_vulnerable_protocols" />
@@ -68,17 +79,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Test" type="JUnit" factoryName="JUnit">
       <module name="IPv4_Scanner_for_vulnerable_protocols" />
       <option name="PACKAGE_NAME" value="com" />
@@ -92,15 +92,11 @@
     </configuration>
     <configuration name="JAR" type="JarApplication">
       <option name="JAR_PATH" value="$PROJECT_DIR$/out/artifacts/IPv4_Scanner_for_vulnerable_protocols_jar/IPv4_Scanner_for_vulnerable_protocols.jar" />
-      <option name="PROGRAM_PARAMETERS" value="-w" />
-      <option name="WORKING_DIRECTORY" value="E:\Szkoła\Internet-scanner\" />
+      <option name="PROGRAM_PARAMETERS" value="-dm" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <option name="ALTERNATIVE_JRE_PATH" value="13" />
-      <method v="2">
-        <option name="BuildArtifacts" enabled="true">
-          <artifact name="IPv4_Scanner_for_vulnerable_protocols:jar" />
-        </option>
-      </method>
+      <method v="2" />
     </configuration>
     <list>
       <item itemvalue="Application.Terminal" />
