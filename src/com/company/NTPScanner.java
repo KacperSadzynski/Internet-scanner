@@ -54,7 +54,7 @@ public class NTPScanner extends IPv4Addresses implements Runnable{
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
 
-        //LI-VN-Mode-R-E-M-Opcode (BIN) 00-010-110-0-0-0-00010
+        //LI(Leap Indicator)-VN(Version Number)-Mode(Enable READVAR)-R-E-M-Opcode(READVAR) (BIN) 00-010-110-0-0-0-00010
         dos.writeShort(0x1602);
         //Sequence (BIN) 0000000000000001
         dos.writeShort(0x0001);
