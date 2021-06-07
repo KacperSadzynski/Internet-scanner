@@ -1,5 +1,4 @@
 package com.company;
-/* 193.110.137.132 test*/
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;

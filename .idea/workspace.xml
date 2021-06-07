@@ -7,8 +7,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7503de65-05eb-489c-be46-433497de7609" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/IPv4_Scanner_for_vulnerable_protocols_jar/IPv4_Scanner_for_vulnerable_protocols.jar" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/IPv4_Scanner_for_vulnerable_protocols_jar/IPv4_Scanner_for_vulnerable_protocols.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/company/IPv4Addresses.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/IPv4Addresses.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

@@ -178,7 +178,7 @@ public class IPv4Addresses {
             if (toFile) {
                 writeToFile(serverAddress, bytesRead, protocol);
             }
-            System.out.println("\r" + packetType + " IP address " + serverAddress + "  \t" + messageLength + " bytes sent " + bytesRead + " bytes received with " + protocol + "                      ");
+            System.out.println("\r" + packetType + " IP address " + serverAddress + "  \t" + messageLength + " bytes sent " + bytesRead + " bytes received with " + protocol + "                                                ");
             pb.draw();
         }
     }
