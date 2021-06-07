@@ -8,9 +8,11 @@
   <component name="ChangeListManager">
     <list default="true" id="7503de65-05eb-489c-be46-433497de7609" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/company/DNSScanner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/DNSScanner.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/company/MemCachedScanner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/MemCachedScanner.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/company/SNMPScanner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/SNMPScanner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/IPv4_Scanner_for_vulnerable_protocols_jar/IPv4_Scanner_for_vulnerable_protocols.jar" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/IPv4_Scanner_for_vulnerable_protocols_jar/IPv4_Scanner_for_vulnerable_protocols.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/IPv4_Scanner_for_vulnerable_protocols/com/company/MemCachedScanner.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/IPv4_Scanner_for_vulnerable_protocols/com/company/MemCachedScanner.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/IPv4_Scanner_for_vulnerable_protocols/com/company/SNMPScanner.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/IPv4_Scanner_for_vulnerable_protocols/com/company/SNMPScanner.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/IPv4Addresses.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/IPv4Addresses.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,19 +50,6 @@
     <property name="project.structure.side.proportion" value="0.2" />
   </component>
   <component name="RunManager" selected="JAR Application.JAR">
-    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="CLASS" />
-      <properties />
-      <listeners />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.company.Main" />
       <module name="IPv4_Scanner_for_vulnerable_protocols" />
@@ -82,6 +71,19 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="CLASS" />
+      <properties />
+      <listeners />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Test" type="JUnit" factoryName="JUnit">
       <module name="IPv4_Scanner_for_vulnerable_protocols" />
       <option name="PACKAGE_NAME" value="com" />
@@ -95,11 +97,15 @@
     </configuration>
     <configuration name="JAR" type="JarApplication">
       <option name="JAR_PATH" value="$PROJECT_DIR$/out/artifacts/IPv4_Scanner_for_vulnerable_protocols_jar/IPv4_Scanner_for_vulnerable_protocols.jar" />
-      <option name="PROGRAM_PARAMETERS" value="-s" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/" />
+      <option name="PROGRAM_PARAMETERS" value="-dm" />
+      <option name="WORKING_DIRECTORY" value="E:\Szkoła\Internet-scanner\" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <option name="ALTERNATIVE_JRE_PATH" value="13" />
-      <method v="2" />
+      <method v="2">
+        <option name="BuildArtifacts" enabled="true">
+          <artifact name="IPv4_Scanner_for_vulnerable_protocols:jar" />
+        </option>
+      </method>
     </configuration>
     <list>
       <item itemvalue="Application.Terminal" />
@@ -136,6 +142,8 @@
       <workItem from="1622919541506" duration="578000" />
       <workItem from="1622987959245" duration="272000" />
       <workItem from="1622988843501" duration="2184000" />
+      <workItem from="1623084492985" duration="148000" />
+      <workItem from="1623084865521" duration="1117000" />
     </task>
     <servers />
   </component>

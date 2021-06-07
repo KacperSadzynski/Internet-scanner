@@ -278,7 +278,8 @@ public class IPv4Addresses {
              */
             public synchronized void update(){
                 actualState++;
-                draw();
+                if(actualState%100 == 0 || actualState == endState)
+                    draw();
             }
             /**
              * It updates actualState by increasing it of a number given in the parameter.<br/>

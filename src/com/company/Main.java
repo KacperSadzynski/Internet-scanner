@@ -168,7 +168,7 @@ public class Main {
                     break;
                 }
                 case "-mc": {
-                    System.out.println("Running MemCached Scanner Scanner");
+                    System.out.println("Running MemCached Scanner");
                     ExecutorService serviceMemCached = Executors.newFixedThreadPool(coreCount);
                     for (int i = 0; i < 224; i++) {
                         serviceMemCached.execute(new MemCachedScanner(i, i + 1));
