@@ -89,7 +89,7 @@ public class DNSScanner extends IPv4Addresses implements Runnable {
         //The end of domain's name
         dos.writeByte(0x00);
 
-        //Type of the query
+        //Type of the query (TXT)
         dos.writeShort(0x0010);
 
         //Class 0x0001 = IN

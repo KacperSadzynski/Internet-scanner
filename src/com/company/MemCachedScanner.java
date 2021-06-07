@@ -54,23 +54,18 @@ public class MemCachedScanner extends IPv4Addresses implements Runnable {
     protected void buildPacket() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
-        //Magic
-        dos.writeShort(0x00);
-        //Opcode
-        dos.writeShort(0x00);
-        //Key length
+        //Magic(00) - Opcode(00)
+        dos.writeShort(0x0000);
+        //Key length(0000)
+        dos.writeShort(0x0000);
+        //Extras length(00) - Datatype(01)
         dos.writeShort(0x0001);
-        //Extra length
-        dos.writeShort(0x00);
-        //Data type
-        //dos.writeShort(0x00);
-        //Reserved
+        //Status(0000)
+        dos.writeShort(0x0000);
+        //Body ("stats\r\n")
         dos.writeShort(0x7374);
-        //Total body
         dos.writeShort(0x6174);
-        //Opaque
         dos.writeShort(0x730d);
-        //CAS
         dos.writeShort(0x0a00);
 
         //Extras, Key, Values - None

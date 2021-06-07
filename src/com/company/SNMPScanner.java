@@ -54,20 +54,28 @@ public class SNMPScanner extends IPv4Addresses implements Runnable{
         DataOutputStream dos = new DataOutputStream(baos);
 
         //Building SNMP packet
+        //SNMP structure (30290201)
         dos.writeShort(0x3029);
         dos.writeShort(0x0201);
+        //version: 2c (01) - SNMP structure (04)
         dos.writeShort(0x0104);
+        //SNMP structure (06) - community ("public") - first byte of length (a0)
         dos.writeShort(0x0670);
         dos.writeShort(0x7562);
         dos.writeShort(0x6c69);
         dos.writeShort(0x63a0);
+        //second byte of length (1c) - data: get-request (0204) - first byte of request-id (01)
         dos.writeShort(0x1c02);
         dos.writeShort(0x0401);
+        //rest bytes of request-id (020304) - SNMP structure (0201) - error-status (00)
         dos.writeShort(0x0203);
         dos.writeShort(0x0402);
         dos.writeShort(0x0100);
+        //SNMP structure (0201)
         dos.writeShort(0x0201);
+        //error-index (00) - SNMP structure (30)
         dos.writeShort(0x0030);
+        //SNMP structure (0e) - Variable binding (300c0608) - OID ("1.3.6.1.2.1.1.1.0") - SNMP structure (0500)
         dos.writeShort(0x0e30);
         dos.writeShort(0x0c06);
         dos.writeShort(0x082b);
